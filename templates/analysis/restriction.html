@@ -1,0 +1,253 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+  body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      color: #000;
+      background-color: #f0f0f0;
+  }
+  .header-section {
+    position: relative;
+    background: url('static/img/bg.jpg') no-repeat center center/cover;
+    height: 200px;
+  }
+  
+  .header-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.8); 
+  }
+  
+  .header-content {
+    position: relative;
+    z-index: 1;
+    color: white;
+    text-align: center;
+    padding-top: 50px;
+  }
+  
+  .card-title {
+      font-weight: bold;
+  }
+
+  .card {
+      background-color: rgba(255, 255, 255, 0.8);
+      color: black;
+      box-shadow: 0 5px 25px rgba(0, 0, 0, 0.3); 
+      border-radius: 0;
+  }
+
+
+  .nav-tabs .nav-link {
+      text-transform: none;
+  }
+  .chart-container {
+    width: 80%;
+    margin-top: 20px;
+  }
+            
+</style>
+    <!-- Header Section -->
+<div class="header-section">
+  <div class="header-overlay"></div>
+  <div class="header-content">
+    <h1>Restriction Enzyme</h1>
+  </div>
+</div>
+
+<div class="container">
+<!-- Main container -->
+<div class="container my-5">
+    <!-- DNA Sequence Input -->
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Enter DNA Sequence (FASTA)</h5>
+        <form id="dna-sequence-form">
+          <div class="mb-3">
+            <label for="dna-sequence" class="form-label">DNA Sequence</label>
+            <textarea class="form-control" id="dna-sequence" rows="5" required></textarea>
+            <div style="padding-top: 10px;">
+              <button type="button" class="btn btn-primary" onclick="removeSpaces()" 
+                      style="padding: 6px 12px; font-size: 14px; text-transform: none; background-color: #1a237e; border-color: #1a237e;">
+                Remove Spaces
+              </button>
+              <button type="button" class="btn btn-danger" onclick="clearInput()" 
+              style="padding: 6px 12px; font-size: 14px; text-transform: none; background-color: #b71c1c; border-color: #b71c1c;">
+               Clear
+             </button>
+             <button type="submit" class="btn btn-primary btn-sm" style="padding: 6px 12px; font-size: 14px; text-transform: none;">
+               Analyze Sequence
+             </button>
+            </div>
+            <script>
+              function removeSpaces() {
+                const textArea = document.getElementById("dna-sequence");
+                textArea.value = textArea.value.replace(/\s+/g, ''); 
+              }
+              function clearInput() {
+                const textArea = document.getElementById("dna-sequence");
+                textArea.value = '';
+              }
+            </script>
+          </div>
+        </form>
+      </div>
+    </div>
+  
+    <!-- Sequence Information -->
+    <div class="card mt-5">
+      <div class="card-body">
+        <h5 class="card-title">Sequence Information</h5>
+        <p id="sequence-info">No sequence information available yet.</p>
+      </div>
+    </div>
+  
+    <!-- Results Table -->
+    <div class="card mt-5">
+      <div class="card-body">
+        <h5 class="card-title">Enzyme Cut Sites</h5>
+   
+        <div class="row mb-3">
+          <div class="col-md-4">
+            <label for="overhang-filter" class="form-label">Filter by Overhang Type</label>
+            <select id="overhang-filter" class="form-select">
+              <option value="all" selected>All</option>
+              <option value="sticky">Sticky</option>
+              <option value="blunt">Blunt</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label for="regex-filter" class="form-label">Filter by Enzyme Name</label>
+            <input type="text" id="regex-filter" class="form-control" placeholder="Enter regex (e.g., Eco)">
+          </div>
+          <div class="col-md-4">
+            <label for="length-filter" class="form-label">Filter by Site Length</label>
+            <select id="length-filter" class="form-select">
+              <option value="all" selected>All</option>
+              <option value="4-6">4-6 bases</option>
+              <option value="7-9">7-9 bases</option>
+              <option value="10+">10+ bases</option>
+            </select>
+          </div>
+        </div>
+
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Enzyme Name</th>
+              <th>Site Length</th>
+              <th>Sequence</th>
+              <th>Overhang</th>
+              <th>Cut Position(s)</th>
+              <th>Frequency</th>
+            </tr>
+          </thead>
+          <tbody id="enzyme-results">
+            <!-- Dynamic enzyme results will appear here -->
+          </tbody>
+        </table>
+      </div>
+      <script>
+
+        document.getElementById("dna-sequence-form").addEventListener("submit", function(event) {
+          event.preventDefault();
+
+          const dnaSequence = document.getElementById("dna-sequence").value.trim();
+          const sequenceInfo = document.getElementById("sequence-info");
+          const enzymeResults = document.getElementById("enzyme-results");
+
+          fetch('/analyze', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/x-www-form-urlencoded',
+              },
+              body: `dna_sequence=${encodeURIComponent(dnaSequence)}`,
+          })
+          .then(response => {
+              if (!response.ok) {
+                  return response.json().then(err => Promise.reject(err));
+              }
+              return response.json();
+          })
+          .then(data => {
+              // Update sequence info
+              sequenceInfo.textContent = `Sequence length: ${dnaSequence.length}`;
+
+              // Populate results table
+              enzymeResults.innerHTML = '';
+              if (data.cut_sites && data.cut_sites.length > 0) {
+                  data.cut_sites.forEach(site => {
+                      const row = document.createElement('tr');
+                      row.innerHTML = `
+                          <td>${site.enzyme_name}</td>
+                          <td>${site.site_length}</td>
+                          <td>${site.sequence}</td>
+                          <td>${site.overhang}</td>
+                          <td>${site.cut_positions.join(', ')}</td>
+                          <td>${site.frequency}</td>
+                      `;
+                      enzymeResults.appendChild(row);
+                  });
+              } else {
+                  enzymeResults.innerHTML = `<tr><td colspan="6">No enzymes cut this sequence.</td></tr>`;
+              }
+          })
+          .catch(err => {
+              console.error(err);
+              sequenceInfo.textContent = "Error analyzing sequence. Please try again.";
+          });
+      });
+        </script>
+        <script>
+              function applyFilters() {
+                const overhangFilter = document.getElementById("overhang-filter").value;
+                const regexFilter = new RegExp(document.getElementById("regex-filter").value, "i"); // Case-insensitive regex
+                const lengthFilter = document.getElementById("length-filter").value;
+
+                const rows = document.querySelectorAll("#enzyme-results tr");
+
+                rows.forEach(row => {
+                    const enzymeName = row.cells[0].textContent;  // Enzyme Name is the 1st cell
+                    const siteLength = parseInt(row.cells[1].textContent);  // Site Length is the 2nd cell
+                    const overhang = row.cells[3].textContent;  // Overhang is the 4th cell
+
+                    // Apply Overhang Filter
+                    const matchesOverhang = overhangFilter === "all" || overhang === overhangFilter;
+
+                    // Apply Regex Filter
+                    const matchesRegex = regexFilter.test(enzymeName);
+
+                    // Apply Length Filter
+                    let matchesLength = true;
+                    if (lengthFilter === "4-6") matchesLength = siteLength >= 4 && siteLength <= 6;
+                    if (lengthFilter === "7-9") matchesLength = siteLength >= 7 && siteLength <= 9;
+                    if (lengthFilter === "10+") matchesLength = siteLength >= 10;
+
+                    // Show or hide row based on all filters
+                    if (matchesOverhang && matchesRegex && matchesLength) {
+                        row.style.display = ""; // Show row
+                    } else {
+                        row.style.display = "none"; // Hide row
+                    }
+                });
+            }
+
+            document.getElementById("overhang-filter").addEventListener("change", applyFilters);
+            document.getElementById("regex-filter").addEventListener("input", applyFilters);
+            document.getElementById("length-filter").addEventListener("change", applyFilters);
+        </script>
+
+    </div>
+  
+  </div>
+    
+</div>
+{% endblock %}

@@ -1,0 +1,577 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+    .header-section {
+      position: relative;
+      background: url('static/img/bg.jpg') no-repeat center center/cover;
+      height: 200px;
+    }
+    
+    .header-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.8); /* Dark transparent overlay */
+    }
+    
+    .header-content {
+      position: relative;
+      z-index: 1;
+      color: white;
+      text-align: center;
+      padding-top: 50px;
+    }
+
+    .search-bar {
+      margin-top: -50px;
+      text-align: center;
+    }
+    
+    .search-input {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .card-text {
+      font-size: 14px;
+    }
+  </style>
+
+  <!-- Header Section -->
+  <div class="header-section">
+    <div class="header-overlay"></div>
+    <div class="header-content">
+      <h1>Barcoding  Tool</h1>
+    </div>
+  </div>
+
+  
+  <!-- Card for displaying results -->
+<div class="card" id="result-card" style="display: none; margin-top: 20px;">
+<div class="card-body">
+  <h5 class="card-title" style="font-weight: 700; color: #2b2b2b;">Comparison Results</h5>
+  <p class="card-text" id="comparison-results" style="color: #535353;">Results will be displayed here after matching.</p>
+</div>
+</div>
+
+<script>
+function showComparisonResults(data) {
+  const resultCard = document.getElementById("result-card");
+  const resultContent = document.getElementById("comparison-results");
+
+  // Display results (assuming data is a string or formatted HTML)
+  resultContent.innerHTML = data;
+  resultCard.style.display = "block";
+}
+
+// Update submitDNABarcode function to send data to the server and handle response
+function submitDNABarcode() {
+  const barcodeFile = document.getElementById("dna-barcode-upload").files[0];
+  if (!barcodeFile) {
+    alert("Please upload a DNA barcode.");
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append("dna_barcode", barcodeFile);
+
+  fetch("/submit_barcode", {
+    method: "POST",
+    body: formData,
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      showComparisonResults(data.results);
+    } else {
+      alert(data.error || "An error occurred during the comparison.");
+    }
+  })
+  .catch(error => console.error("Error:", error));
+}
+</script>
+<!-- Card for displaying detailed comparison results -->
+<div class="card" id="detailed-result-card" style="display: none; margin-top: 20px;">
+<div class="card-body">
+  <h5 class="card-title" style="font-weight: 700; color: #2b2b2b;">Detailed Comparison Results</h5>
+  <p class="card-text" id="detailed-comparison-results" style="color: #535353;">Detailed results will appear here after processing.</p>
+</div>
+</div>
+
+<script>
+        function removeSpaces() {
+            const textArea = document.getElementById('gene-sequence');
+            textArea.value = textArea.value.replace(/\s+/g, '');
+            }
+function showDetailedResults(data) {
+  const detailedResultCard = document.getElementById("detailed-result-card");
+  const detailedResultContent = document.getElementById("detailed-comparison-results");
+
+  // Assuming `data.results` contains detailed results
+  detailedResultContent.innerHTML = `
+    <strong>Species Matched:</strong> ${data.species}<br>
+    <strong>Gene Information:</strong> ${data.gene_info}<br>
+    <strong>Similarity Score:</strong> ${data.similarity_score}%<br>
+    <strong>Accession Number:</strong> ${data.accession}<br>
+    <strong>Source Database:</strong> ${data.database}
+  `;
+  detailedResultCard.style.display = "block";
+}
+
+function submitDNABarcode() {
+  const barcodeFile = document.getElementById("dna-barcode-upload").files[0];
+  if (!barcodeFile) {
+    alert("Please upload a DNA barcode.");
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append("dna_barcode", barcodeFile);
+
+  fetch("/submit_barcode", {
+    method: "POST",
+    body: formData,
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      showDetailedResults(data.results);
+    } else {
+      alert(data.error || "An error occurred during the comparison.");
+    }
+  })
+  .catch(error => console.error("Error:", error));
+}
+
+</script>
+<div style="display: flex; justify-content: left; align-items: left;">
+  <h4 style="font-weight: 700; color: #1a237e; padding-left: 40px;">Generate Barcode From Gene Sequence</h4>
+</div> 
+  <!-- Tab navigation -->
+  <ul class="nav nav-pills" id="barcodeTab" role="tablist">
+    <li class="nav-item" role="presentation">
+      <a class="nav-link active" id="datamatrix-tab" data-bs-toggle="pill" href="#datamatrix" role="tab" aria-controls="datamatrix" aria-selected="true">Data Matrix Barcode</a>
+    </li>
+    <li class="nav-item" role="presentation">
+      <a class="nav-link" id="qrcode-tab" data-bs-toggle="pill" href="#qrcode" role="tab" aria-controls="qrcode" aria-selected="false">QR Code</a>
+    </li>
+    <li class="nav-item" role="presentation">
+      <a class="nav-link" id="pdf417-tab" data-bs-toggle="pill" href="#pdf417" role="tab" aria-controls="pdf417" aria-selected="false">PDF417 Barcode</a>
+    </li>
+    <li class="nav-item" role="presentation">
+      <a class="nav-link" id="aztec-tab" data-bs-toggle="pill" href="#aztec" role="tab" aria-controls="aztec" aria-selected="false">Aztec Code</a>
+    </li>
+  </ul>
+
+<div class="tab-content" id="barcodeTabContent">
+<div class="tab-pane fade show active" id="datamatrix" role="tabpanel" aria-labelledby="datamatrix-tab">
+ <div class="container" style="margin: 5px; padding-top: 20px;">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title" style="font-weight: 700; color: #2b2b2b;">Generate Data Matrix DNA Barcode</h5>
+        <div class="mb-3">
+          <form id="blastForm">
+            <label for="sequence">Enter FASTA sequence(s):</label> <br>
+            <div class="form-outline" data-mdb-input-init>
+              <textarea class="form-control" id="dna-sequence" name="dna_sequence" rows="5"></textarea>
+              <label class="form-label" for="textAreaExample">Enter Data</label>
+            </div>
+            <div style="padding-top: 10px;">
+              <button type="button" class="btn btn-primary" onclick="generateBarcode()" style="padding: 6px 12px; font-size: 14px; background-color: #1a237e; border-color: #1a237e;">Generate Barcode</button>
+            </div>                    
+          </form>
+        </div>
+        
+        <!-- Container for Barcode Output -->
+        <div class="mt-4">
+          <h5 class="card-title" style="font-weight: 700; color: #2b2b2b;">Results</h5>
+          <canvas id="barcodeCanvas"></canvas>
+          <div style="margin-top: 10px;">
+            <label for="formatSelect">Select Image Format:</label>
+            <select id="formatSelect" class="form-select form-select-sm" style="width: 150px; display: inline-block;">
+              <option value="png">PNG</option>
+              <option value="jpeg">JPEG</option>
+            </select>
+            <button type="button" class="btn btn-success" onclick="downloadBarcode()" style="padding: 6px 12px; font-size: 14px;">Download Barcode</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+ </div>
+
+ 
+  <script src="https://cdn.jsdelivr.net/npm/bwip-js/dist/bwip-js.min.js"></script>
+  <script>
+    
+    function removeSpaces() {
+      const textArea = document.getElementById('gene-sequence');
+      textArea.value = textArea.value.replace(/\s+/g, '');
+    }
+    function generateBarcode() {
+      const dnaSequence = document.getElementById("dna-sequence").value.trim();
+      if (!dnaSequence) {
+        alert("Please enter a DNA sequence.");
+        return;
+      }
+  
+      const canvas = document.getElementById("barcodeCanvas");
+      const ctx = canvas.getContext("2d");
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+  
+      bwipjs.toCanvas(canvas, {
+        bcid: 'datamatrix', 
+        text: dnaSequence,     
+        scale: 3,                
+        height: 10,             
+        includetext: false,      
+      }, function (err) {
+        if (err) {
+          alert("Error generating barcode: " + err);
+        }
+      });
+    }
+  
+    function downloadBarcode() {
+      const canvas = document.getElementById("barcodeCanvas");
+      const format = document.getElementById("formatSelect").value;
+      const link = document.createElement("a");
+      link.download = `barcode.${format}`;
+      link.href = canvas.toDataURL(`image/${format}`);
+      link.click();
+    }
+  </script>
+
+  <div class="tab-pane fade" id="qrcode" role="tabpanel" aria-labelledby="qrcode-tab">
+    <div class="container" style="margin: 5px; padding-top: 10px;">
+      <div class="card">
+          <div class="card-body">
+              <h5 class="card-title" style="font-weight: 700; color: #2b2b2b;">Generate QR Code from Gene Sequence</h5>
+              <div class="mb-3">
+                  <form id="qrForm">
+                      <label for="gene-sequence">Enter Gene Sequence:</label> <br>
+                      <div class="form-outline" data-mdb-input-init>
+                          <textarea class="form-control" id="gene-sequence" name="gene_sequence" rows="5"></textarea>
+                          <label class="form-label" for="gene-sequence">Enter Data</label>
+                      </div>
+                      <div style="padding-top: 10px;">
+                          <button type="button" class="btn btn-primary" onclick="generateQRCode()" style="padding: 6px 12px; font-size: 14px; background-color: #1a237e; border-color: #1a237e;">Generate QR Code</button>
+                      </div>
+                  </form>
+              </div>
+              <div class="mt-4">
+                  <h5 class="card-title" style="font-weight: 700; color: #2b2b2b;">Results</h5>
+                  <canvas id="qrCodeCanvas"></canvas>
+                  <div class="mt-3">
+                      <label for="download-format">Choose Image Format:</label>
+                      <select id="download-format" class="form-select" style="width: auto; display: inline-block; margin-left: 10px;">
+                          <option value="png">PNG</option>
+                          <option value="jpeg">JPEG</option>
+                      </select>
+                      <button type="button" class="btn btn-success" onclick="downloadQRCode()" style="margin-left: 10px; padding: 6px 12px; font-size: 14px;">Download QR Code</button>
+                  </div>
+              </div>
+          </div>
+      </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/qrious/dist/qrious.min.js"></script>
+<script>
+    function removeSpaces() {
+      const textArea = document.getElementById('gene-sequence');
+      textArea.value = textArea.value.replace(/\s+/g, '');
+    }
+    let qr;
+
+    function generateQRCode() {
+        const input = document.getElementById('gene-sequence').value;
+        const canvas = document.getElementById('qrCodeCanvas');
+        
+        if (!input) {
+            alert('Please enter a gene sequence.');
+            return;
+        }
+
+        qr = new QRious({
+            element: canvas,
+            value: input,
+            size: 200 // Adjust size as needed
+        });
+    }
+
+    function downloadQRCode() {
+        if (!qr) {
+            alert('Please generate the QR code first.');
+            return;
+        }
+
+        const format = document.getElementById('download-format').value;
+        const canvas = document.getElementById('qrCodeCanvas');
+        const link = document.createElement('a');
+
+        if (format === 'png') {
+            link.href = canvas.toDataURL('image/png');
+        } else if (format === 'jpeg') {
+            link.href = canvas.toDataURL('image/jpeg');
+        }
+        
+        link.download = `gene_qr_code.${format}`;
+        link.click();
+    }
+</script>
+
+<div class="tab-pane fade" id="pdf417" role="tabpanel" aria-labelledby="pdf417-tab">
+  <div class="container" style="margin: 5px; padding-top: 10px;">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title" style="font-weight: 700; color: #2b2b2b;">Generate PDF417 Barcode from Gene Sequence</h5>
+        <div class="mb-3">
+          <form id="pdf417Form">
+            <label for="gene-sequence">Enter Gene Sequence:</label> <br>
+            <div class="form-outline" data-mdb-input-init>
+              <textarea class="form-control" id="gene-sequence" name="gene_sequence" rows="5"></textarea>
+              <label class="form-label" for="gene-sequence">Enter Data</label>
+            </div>
+            <div style="padding-top: 10px;">
+              <button type="button" class="btn btn-primary" onclick="generatePDF417Code()" style="padding: 6px 12px; font-size: 14px; background-color: #1a237e; border-color: #1a237e; padding: 6px 12px; font-size: 14px;"">Generate PDF417 Barcode</button>
+            </div>
+          </form>
+        </div>
+  
+        <!-- Container for Barcode Output -->
+        <div class="mt-4">
+          <h5 class="card-title" style="font-weight: 700; color: #2b2b2b;">Results</h5>
+          <canvas id="pdf417Canvas"></canvas>
+          <div style="margin-top: 10px;">
+            <label for="download-format">Choose Download Format:</label>
+            <label for="download-format">Choose Image Format:</label>
+            <select id="download-format" class="form-select" style="width: auto; display: inline-block; margin-left: 10px;">
+                <option value="png">PNG</option>
+                <option value="jpeg">JPEG</option>
+            </select>
+            <button type="button" class="btn btn-success" onclick="downloadBarcode()" style="padding: 6px 12px; font-size: 14px;">Download Barcode</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+ </div>
+
+
+<script>
+  
+  function removeSpaces() {
+      const textArea = document.getElementById('gene-sequence');
+      textArea.value = textArea.value.replace(/\s+/g, '');
+    }
+  function generatePDF417Code() {
+    const geneSequence = document.getElementById('gene-sequence').value;
+    if (!geneSequence) {
+      alert('Please enter a gene sequence.');
+      return;
+    }
+
+    const canvas = document.getElementById('pdf417Canvas');
+    try {
+      bwipjs.toCanvas(canvas, {
+        bcid: 'pdf417',         // Barcode type
+        text: geneSequence,    // Text to encode
+        scale: 3,              // 3x scaling factor
+        height: 10,            // Bar height, in millimeters
+        includetext: true,     // Show human-readable text
+        textxalign: 'center',  // Align text to the center
+      });
+    } catch (e) {
+      console.error('Error generating barcode:', e);
+      alert('Failed to generate the barcode. Please try again.');
+    }
+  }
+
+  function downloadBarcode() {
+    const canvas = document.getElementById('pdf417Canvas');
+    const format = document.getElementById('download-format').value;
+    const link = document.createElement('a');
+
+    if (format === 'png') {
+      link.href = canvas.toDataURL('image/png');
+      link.download = 'barcode.png';
+    } else if (format === 'jpeg') {
+      link.href = canvas.toDataURL('image/jpeg');
+      link.download = 'barcode.jpeg';
+    } else if (format === 'webp') {
+      link.href = canvas.toDataURL('image/webp');
+      link.download = 'barcode.webp';
+    } else {
+      alert('Invalid format selected.');
+      return;
+    }
+
+    link.click();
+  }
+</script>
+
+<div class="tab-pane fade" id="aztec" role="tabpanel" aria-labelledby="aztec-tab">
+  <div class="container" style="margin: 5px; padding-top: 10px;">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title" style="font-weight: 700; color: #2b2b2b;">Generate Aztec Code Barcode from Gene Sequence</h5>
+        <div class="mb-3">
+          <form id="AztecCodeForm">
+            <label for="gene-sequence">Enter Gene Sequence:</label> <br>
+            <div class="form-outline" data-mdb-input-init>
+              <textarea class="form-control" id="gene-sequence" name="gene_sequence" rows="5"></textarea>
+              <label class="form-label" for="gene-sequence">Enter Data</label>
+            </div>
+            <div style="padding-top: 10px;">
+              <button type="button" class="btn btn-primary" onclick="generateAztecCode()" style="padding: 6px 12px; font-size: 14px; background-color: #1a237e; border-color: #1a237e;">Generate Aztec Code</button>
+              <button type="button" class="btn btn-secondary" onclick="removeSpaces()" style="padding: 6px 12px; font-size: 14px; margin-left: 10px;">Remove Spaces</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Container for Barcode Output -->
+        <div class="mt-4">
+          <h5 class="card-title" style="font-weight: 700; color: #2b2b2b;">Results</h5>
+          <canvas id="aztecCodeCanvas"></canvas>
+          <div style="margin-top: 10px;">
+            <label for="download-format">Choose Image Format:</label>
+            <select id="download-format" class="form-select" style="width: auto; display: inline-block; margin-left: 10px;">
+                <option value="png">PNG</option>
+                <option value="jpeg">JPEG</option>
+            </select>
+            <button type="button" class="btn btn-success" onclick="downloadBarcode()" style="padding: 6px 12px; font-size: 14px;">Download Barcode</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    <script>
+      
+      function removeSpaces() {
+          const textArea = document.getElementById('gene-sequence');
+          textArea.value = textArea.value.replace(/\s+/g, '');
+        }
+      function generateAztecCode() {
+        const geneSequence = document.getElementById('gene-sequence').value;
+        if (!geneSequence) {
+          alert('Please enter a gene sequence.');
+          return;
+        }
+
+        const canvas = document.getElementById('aztecCodeCanvas');
+        try {
+          bwipjs.toCanvas(canvas, {
+            bcid: 'azteccode',   
+            text: geneSequence,   
+            scale: 4,            
+            version: 0,          
+            includetext: false,   
+          });
+        } catch (e) {
+          console.error('Error generating Aztec Code:', e);
+          alert('Failed to generate the Aztec Code. Please try again.');
+        }
+      }
+
+      function downloadBarcode() {
+        const canvas = document.getElementById('aztecCodeCanvas');
+        const format = document.getElementById('download-format').value;
+        const link = document.createElement('a');
+
+        if (format === 'png') {
+          link.href = canvas.toDataURL('image/png');
+          link.download = 'aztec_code.png';
+        } else if (format === 'jpeg') {
+          link.href = canvas.toDataURL('image/jpeg');
+          link.download = 'aztec_code.jpeg';
+        } else {
+          alert('Invalid format selected.');
+          return;
+        }
+
+        link.click();
+      }
+    </script>
+    </div>
+    </div>
+
+    <div style="display: flex; justify-content: left; align-items: left; padding-top: 20px;">
+      <h4 style="font-weight: 700; color: #1a237e; padding-left: 40px;">Generate Barcode From Accession Numbers</h4>
+    </div>    
+    <div class="container" style="margin: 5px; padding-top: 5px;">
+      <div class="card">
+          <div class="card-body">
+              <h5 class="card-title" style="font-weight: 700; color: #2b2b2b;">Generate Code 128 Barcode from Accession Code</h5>
+              <div class="mb-3">
+                  <form id="Code128Form">
+                      <label for="accessionnumber">Enter Accession Code:</label> <br>
+                      <div class="form-outline" data-mdb-input-init>
+                          <textarea class="form-control" id="accessionnumber" name="accessionnumber" rows="5"></textarea>
+                          <label class="form-label" for="accessionnumber">Enter Data</label>
+                      </div>
+                      <div style="padding-top: 10px;">
+                          <button type="button" class="btn btn-primary" onclick="generateCode128()" style="padding: 6px 12px; font-size: 14px; background-color: #1a237e; border-color: #1a237e;">Generate Barcode</button>
+                          <button type="button" class="btn btn-secondary" onclick="removeSpaces()" style="padding: 6px 12px; font-size: 14px; margin-left: 10px;">Remove Spaces</button>
+                      </div>
+                  </form>
+              </div>
+  
+              <!-- Container for Barcode Output -->
+              <div class="mt-4">
+                  <h5 class="card-title" style="font-weight: 700; color: #2b2b2b;">Results</h5>
+                  <canvas id="Code128Canvas"></canvas>
+                  <div style="margin-top: 10px;">
+                      <label for="download-format">Choose Image Format:</label>
+                      <select id="download-format" class="form-select" style="width: auto; display: inline-block; margin-left: 10px;">
+                          <option value="png">PNG</option>
+                          <option value="jpeg">JPEG</option>
+                      </select>
+                      <button type="button" class="btn btn-success" onclick="downloadBarcode()" style="padding: 6px 12px; font-size: 14px;">Download Barcode</button>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+  
+  <script>
+      function generateCode128() {
+          const accessionCode = document.getElementById('accessionnumber').value.trim();
+          if (accessionCode) {
+              JsBarcode("#Code128Canvas", accessionCode, {
+                  format: "CODE128",
+                  displayValue: true, // Show the value below the barcode
+                  fontSize: 20,
+                  width: 2,           // Adjust the width of bars
+                  height: 100         // Adjust the height of the barcode
+              });
+          } else {
+              alert("Please enter an accession code.");
+          }
+      }
+  
+      function removeSpaces() {
+          const accessionField = document.getElementById('accessionnumber');
+          accessionField.value = accessionField.value.replace(/\s+/g, '');
+      }
+  
+      // Function to download the barcode as PNG or JPEG
+      function downloadBarcode() {
+          const canvas = document.getElementById('Code128Canvas');
+          const format = document.getElementById('download-format').value;
+          const dataUrl = canvas.toDataURL("image/" + format);
+  
+          const link = document.createElement('a');
+          link.href = dataUrl;
+          link.download = "barcode." + format; 
+          link.click();
+      }
+  </script>  
+</div>
+
+{% endblock %} 

@@ -1,0 +1,196 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+  <style>
+    .header-section {
+      position: relative;
+      background: url('static/img/bg.jpg') no-repeat center center/cover;
+      height: 350px;
+    }
+    
+    .header-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.8); /* Dark transparent overlay */
+    }
+    
+    .header-content {
+      position: relative;
+      z-index: 1;
+      color: white;
+      text-align: center;
+      padding-top: 100px;
+    }
+
+    .search-bar {
+      margin-top: -50px;
+      text-align: center;
+    }
+    
+    .search-input {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .card-text {
+      font-size: 14px;
+    }
+  </style>
+
+  <!-- Header Section -->
+  <div class="header-section">
+    <div class="header-overlay"></div>
+    <div class="header-content">
+      <h1>Indonesia GeneBank Submission</h1>
+      <p>Submit your work to the Indonesia-GeneBank</p>
+    </div>
+  </div>
+
+
+  <!-- Search Bar -->
+  <div class="search-bar" style="padding-top:100px;">
+    <div class="search-input">
+      <input type="search" class="form-control" placeholder="Search Submission...">
+    </div>
+  </div>
+
+<div class="container" style="margin:30px;">
+
+<!-- Tabs navs -->
+<ul class="nav nav-tabs nav-fill mb-3" id="ex1" role="tablist">
+  <li class="nav-item" role="presentation">
+    <a
+      data-mdb-toggle="tab"
+      class="nav-link active"
+      id="ex2-tab-1"
+      href="#ex2-tabs-1"
+      role="tab"
+      aria-controls="ex2-tabs-1"
+      aria-selected="true"
+      >DNA</a
+    >
+  </li>
+  <li class="nav-item" role="presentation">
+    <a
+      data-mdb-toggle="tab"
+      class="nav-link"
+      id="ex2-tab-2"
+      href="#ex2-tabs-2"
+      role="tab"
+      aria-controls="ex2-tabs-2"
+      aria-selected="false"
+      >RNA</a
+    >
+  </li>
+  <li class="nav-item" role="presentation">
+    <a
+      data-mdb-toggle="tab"
+      class="nav-link"
+      id="ex2-tab-3"
+      href="#ex2-tabs-3"
+      role="tab"
+      aria-controls="ex2-tabs-3"
+      aria-selected="false"
+      >Protein</a
+    >
+  </li>
+  <li class="nav-item" role="presentation">
+    <a
+      data-mdb-toggle="tab"
+      class="nav-link"
+      id="ex2-tab-4"
+      href="#ex2-tabs-4"
+      role="tab"
+      aria-controls="ex2-tabs-4"
+      aria-selected="false"
+      >Journal</a
+    >
+  </li>
+  <li class="nav-item" role="presentation">
+    <a
+      data-mdb-toggle="tab"
+      class="nav-link"
+      id="ex2-tab-5"
+      href="#ex2-tabs-5"
+      role="tab"
+      aria-controls="ex2-tabs-5"
+      aria-selected="false"
+      >Books</a
+    >
+  </li>
+  <li class="nav-item" role="presentation">
+    <a
+      data-mdb-toggle="tab"
+      class="nav-link"
+      id="ex2-tab-6"
+      href="#ex2-tabs-6"
+      role="tab"
+      aria-controls="ex2-tabs-6"
+      aria-selected="false"
+      >Articles</a
+    >
+  </li>
+</ul>
+<!-- Tabs navs -->
+
+<!-- Tabs content -->
+<div class="tab-content" id="ex2-content">
+  <div
+    class="tab-pane fade show active"
+    id="ex2-tabs-1"
+    role="tabpanel"
+    aria-labelledby="ex2-tab-1"
+  >
+    Tab 1 content
+  </div>
+  <div
+    class="tab-pane fade"
+    id="ex2-tabs-2"
+    role="tabpanel"
+    aria-labelledby="ex2-tab-2"
+  >
+    Tab 2 content
+  </div>
+  <div
+    class="tab-pane fade"
+    id="ex2-tabs-3"
+    role="tabpanel"
+    aria-labelledby="ex2-tab-3"
+  >
+    Tab 3 content
+  </div>
+  <div
+    class="tab-pane fade"
+    id="ex2-tabs-4"
+    role="tabpanel"
+    aria-labelledby="ex2-tab-4"
+  >
+    Tab 4 content
+  </div>
+  <div
+    class="tab-pane fade"
+    id="ex2-tabs-5"
+    role="tabpanel"
+    aria-labelledby="ex2-tab-5"
+  >
+    Tab 5 content
+  </div>
+  <div
+    class="tab-pane fade"
+    id="ex2-tabs-6"
+    role="tabpanel"
+    aria-labelledby="ex2-tab-6"
+  >
+    Tab 6 content
+  </div>
+</div>
+<!-- Tabs content -->
+
+  <!-- MDB5 JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.0.0/mdb.min.js"></script>
+
+{% endblock %}

@@ -1,0 +1,19 @@
+<!-- home.html -->
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container my-5">
+    <div class="card text-center shadow-lg">
+      <div class="card-body">
+        <h3 class="card-title text-primary mb-3">Blast Results</h3>
+        <p class="card-text text-muted">Frequency of Amino Acids in the Sequence</p>
+        <!-- Display the chart image -->
+        <img src="data:image/png;base64,{{ image }}" alt="Amino Acid Frequency Chart" class="img-fluid rounded" style="max-width: 100%; height: auto;">
+        <img src="data:image/png;base64,{{ plot_url }}" alt="Amino Acid Composition">
+      </div>
+    </div>
+  </div>
+  
+
+{% endblock %}

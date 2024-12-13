@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <style>
+    .header-section {
+      position: relative;
+      background: url('static/img/bg.jpg') no-repeat center center/cover;
+      height: 200px;
+    }
+    
+    .header-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.8); /* Dark transparent overlay */
+    }
+    
+    .header-content {
+      position: relative;
+      z-index: 1;
+      color: white;
+      text-align: center;
+      padding-top: 50px;
+    }
+
+    .search-bar {
+      margin-top: -50px;
+      text-align: center;
+    }
+    
+    .search-input {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .card-text {
+      font-size: 14px;
+    }
+  </style>
+
+  <!-- Header Section -->
+  <div class="header-section">
+    <div class="header-overlay"></div>
+    <div class="header-content">
+      <h1>Articles</h1>
+      <p>Explore Articles By Our Verified Users: </p>
+    </div>
+  </div>
+
+
+  <!-- Search Bar -->
+  <div class="search-bar" style="padding-top:90px;">
+    <div class="search-input">
+      <input type="search" class="form-control" placeholder="Search Articles...">
+    </div>
+  </div>
+
+  <div class="container" style="padding-top:40px;padding-bottom: 30px;">
+    <!-- 
+  <div class="row">
+    <div class="col-md-4">
+          <div class="card" style="width: 18rem;">
+      <img src="https://mdbcdn.b-cdn.net/img/new/standard/city/062.webp" class="card-img-top" alt="Chicago Skyscrapers"/>
+      <div class="card-body">
+        <h5 class="card-title">Card title</h5>
+        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+      </div>
+      <ul class="list-group list-group-light list-group-small">
+        <li class="list-group-item px-4">Cras justo odio</li>
+        <li class="list-group-item px-4">Dapibus ac facilisis in</li>
+        <li class="list-group-item px-4">Vestibulum at eros</li>
+      </ul>
+      <div class="card-body">
+        <a href="#" class="card-link">Card link</a>
+      </div>
+    </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card" style="width: 18rem;">
+        <img src="https://mdbcdn.b-cdn.net/img/new/standard/city/062.webp" class="card-img-top" alt="Chicago Skyscrapers"/>
+        <div class="card-body">
+          <h5 class="card-title">Card title</h5>
+          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+        </div>
+        <ul class="list-group list-group-light list-group-small">
+          <li class="list-group-item px-4">Cras justo odio</li>
+          <li class="list-group-item px-4">Dapibus ac facilisis in</li>
+          <li class="list-group-item px-4">Vestibulum at eros</li>
+        </ul>
+        <div class="card-body">
+          <a href="#" class="card-link">Card link</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card" style="width: 18rem;">
+        <img src="https://mdbcdn.b-cdn.net/img/new/standard/city/062.webp" class="card-img-top" alt="Chicago Skyscrapers"/>
+        <div class="card-body">
+          <h5 class="card-title">Card title</h5>
+          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+        </div>
+        <ul class="list-group list-group-light list-group-small">
+          <li class="list-group-item px-4">Cras justo odio</li>
+          <li class="list-group-item px-4">Dapibus ac facilisis in</li>
+          <li class="list-group-item px-4">Vestibulum at eros</li>
+        </ul>
+        <div class="card-body">
+          <a href="#" class="card-link">Card link</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  -->
+  </div>
+  <!-- MDB5 JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.0.0/mdb.min.js"></script>
+
+{% endblock %}

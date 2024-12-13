@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <style>
+        .card {
+            border-radius: 0; /* 0-radius borders */
+            margin: 15px;     /* Slight gap between cards */
+        }
+    </style>
+
+ <div class="container text-center mt-5">
+        <!-- Header -->
+        <h1 class="mb-4">Publications</h1>
+
+        <!-- Card row -->
+        <div class="row justify-content-center">
+            <!-- Journal Card -->
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Journal</h5>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Books Card -->
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Books</h5>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Articles Card -->
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Articles</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MDB5 JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.0.0/mdb.min.js"></script>
+{% endblock %}

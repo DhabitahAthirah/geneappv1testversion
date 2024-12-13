@@ -1,0 +1,324 @@
+<!-- home.html -->
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+
+    .body {
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        color: #000;
+        background-color: #f0f0f0;
+    }
+    .header-section {
+      position: relative;
+      background: url('static/img/bg.jpg') no-repeat center center/cover;
+      height: 200px;
+    }
+    
+    .header-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.8); /* Dark transparent overlay */
+    }
+    
+    .header-content {
+      position: relative;
+      z-index: 1;
+      color: white;
+      text-align: center;
+      padding-top: 50px;
+    }
+    
+    .card-title {
+        font-weight: bold;
+    }
+
+    .card {
+        background-color: rgba(255, 255, 255, 0.8);
+        color: black;
+        box-shadow: 0 5px 25px rgba(0, 0, 0, 0.3); 
+        border-radius: 0;
+    }
+
+
+    .nav-tabs .nav-link {
+        text-transform: none;
+    }
+    .chart-container {
+      width: 80%;
+      margin-top: 20px;
+    }
+              
+</style>
+  <div class="header-section">
+    <div class="header-overlay"></div>
+    <div class="header-content">
+      <h1>Species Identification</h1>
+    </div>
+  </div>
+    <div class="container-fluid" style= "padding: 20px; text-align: left;">
+            <div class="container" style="margin: 5px;padding-top: 10px;">
+                  <div class="card" style="border-radius:0; ">
+                    <div class="container" style="margin: 15px;margin-right: 15px;margin-bottom: 15px;">
+                            <h5 style="font-weight:bold; padding-left: 10px;">Search in Gene Bank</h5>
+                            <form id="blastForm" action="/process_sequenceblast" method="post">
+                              <div class="container">
+                                  <label for="sequence">Enter FASTA sequence(s):</label> <br>
+                                  <div class="form-outline" data-mdb-input-init>
+                                      <textarea class="form-control" id="dna-sequence" name="dna_sequence" rows="5"></textarea>
+                                      <label class="form-label" for="textAreaExample">Enter Data</label>
+                                  </div>
+                                  <div style="padding-top: 10px;">
+                                      <button type="button" class="btn btn-primary" onclick="removeSpaces()"
+                                       style="width: 150px; padding: 6px 12px; font-size: 14px; text-transform: none; background-color: #1a237e; border-color: #1a237e;">
+                                          Remove Spaces
+                                      </button>
+                                      <button type="button" class="btn btn-danger" onclick="selectBarcode()" 
+                                      style="width: 160px; padding: 6px 12px; font-size: 14px; text-transform: none; background-color: #000000; border-color: #b71c1c;">
+                                         Find Using Barcode
+                                      </button>
+                                      <button type="button" class="btn btn-danger" onclick="clearInput()" 
+                                              style="width: 90px; padding: 6px 12px; font-size: 14px; text-transform: none; background-color: #b71c1c; border-color: #b71c1c;">
+                                          Clear
+                                      </button>
+                                      <button type="submit" class="btn btn-primary" 
+                                              style="width: 90px; padding: 6px 12px; font-size: 14px; text-transform: none; background-color: #1e811b; border-color: #0d47a1;">
+                                          Search
+                                      </button>
+                                  </div>
+                              </div>                                     
+                          </form>  
+             <!-- 
+                            <h5 style="font-weight:bold; padding-left: 10px; padding-top: 20px;">Search Species Name</h5>
+                            <form id="boldForm" action="/sent_boldsystem" method="post">
+                                <div class="container">
+                                    <div style="padding-top: 10px;">
+                                        <label for="database" style="font-size: 14px;">Select Database:</label>
+                                        <select id="database" name="database" class="form-control" 
+                                                style="width: 50%; font-size: 14px; padding: 6px 8px;">
+                                            <option value="COX1">Animals (COI)</option>
+                                            <option value="COX1_SPECIES">Animals - Species Level</option>
+                                            <option value="COX1_SPECIES_PUBLIC">Animals - Public Species Level</option>
+                                            <option value="COX1_L640bp">Animals - Long Sequences</option>
+                                            <option value="Plant">Plants</option>
+                                            <option value="Fungi">Fungi</option>
+                                            <option value="Protist">Protists</option>
+                                        </select>
+                                    </div>
+
+                                    <label for="sequence">Enter FASTA sequence(s):</label> <br>
+                                    <div class="form-outline" data-mdb-input-init>
+                                        <textarea class="form-control" id="dna-sequence" name="dna_sequence" rows="5"></textarea>
+                                        <label class="form-label" for="textAreaExample">Enter Data</label>
+                                    </div>
+
+                  
+                                    <div style="padding-top: 10px;">
+                                        <button type="button" class="btn btn-primary" onclick="removeSpaces1()" 
+                                                style="width: 150px; padding: 6px 12px; font-size: 14px; text-transform: none; background-color: #1a237e; border-color: #1a237e;">
+                                            Remove Spaces
+                                        </button>
+
+                                        <button type="button" class="btn btn-danger" onclick="selectBarcode()" 
+                                                style="width: 160px; padding: 6px 12px; font-size: 14px; text-transform: none; background-color: #000000; border-color: #b71c1c;">
+                                        Find Using Barcode
+                                        </button>
+
+                                        <button type="button" class="btn btn-danger" onclick="clearInput1()" 
+                                                style="width: 90px; padding: 6px 12px; font-size: 14px; text-transform: none; background-color: #b71c1c; border-color: #b71c1c;">
+                                            Clear
+                                        </button>
+
+                                        <button type="submit" class="btn btn-primary" 
+                                                style="width: 90px; padding: 6px 12px; font-size: 14px; text-transform: none; background-color: #1e811b; border-color: #0d47a1;">
+                                            Search
+                                        </button>
+                                    </div>
+                                </div>    
+                         -->
+                                <!-- JavaScript Functions -->
+                                <script>
+
+                                    function removeSpaces1() {
+                                        const dnaSequenceInput = document.getElementById('dna-sequence');
+                                        if (dnaSequenceInput) {
+                                            // Remove all whitespace characters
+                                            dnaSequenceInput.value = dnaSequenceInput.value.replace(/\s+/g, '');
+                                        } else {
+                                            console.error("Textarea with ID 'dna-sequence' not found.");
+                                        }
+                                    }
+
+                                    function clearInput1() {
+                                        const textArea = document.getElementById("dna-sequence");
+                                        if (textArea) {
+                                            // Reset value to an empty string
+                                            textArea.value = ''; 
+                                        } else {
+                                            console.error("Textarea with ID 'dna-sequence' not found.");
+                                        }
+                                    }
+                                </script>                                 
+                            </form>
+                                                
+                                          
+                </div>             
+            </div>
+       </div>
+
+    <div id="barcode-container" class="container" style="margin: 5px; padding-top: 20px; display: none;">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title" style="font-weight: 700; color: #2b2b2b; padding-left: 10px;">DNA Barcode Search</h5>
+                <p class="card-text" style="color: #535353;">
+                    Upload a DNA barcode image
+                </p>
+                <div class="col-md-6" style="padding-top: 20px;">
+
+                    <div class="mb-3">
+                        <input type="file" id="dna-barcode-upload" class="form-control" accept="image/*" onchange="previewDNABarcode(event)">
+                    </div>
+
+                    <div id="barcode-preview" style="display: none;">
+                        <p class="text-muted">DNA Barcode Preview:</p>
+                        <img id="barcode-preview-img" src="#" alt="DNA Barcode Preview" class="img-fluid" style="max-width: 150px; margin-bottom: 15px;">
+                    </div>
+                    <div class="mt-3">
+                        <label for="decoded-barcode-content" class="form-label">Decoded Barcode Content:</label>
+                        <textarea id="decoded-barcode-content" class="form-control" rows="3" readonly style="background-color: #f8f9fa;"></textarea>
+                    </div>
+                    <button type="button" class="btn btn-primary mt-3" onclick="readDNABarcode()" 
+                        style="padding: 6px 12px; font-size: 14px; background-color: #1a237e; border-color: #1a237e;">
+                        Read DNA Barcode
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="clearDNABarcode()" 
+                        style="padding: 6px 12px; font-size: 14px; background-color: #616161; border-color: #616161; margin-left: 5px;">
+                        Clear
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>    
+  
+    <div class="container">
+
+    </div>
+
+  <script>
+        
+        function removeSpaces() {
+            const dnaSequenceInput = document.getElementById('dna-sequence');
+            dnaSequenceInput.value = dnaSequenceInput.value.replace(/\s+/g, '');
+        }
+
+        function clearInput() {
+            const textArea = document.getElementById("dna-sequence");
+            if (textArea) {
+                textArea.value = ''; 
+            } else {
+                console.error("Textarea with ID 'dna-sequence' not found.");
+            }
+        }
+
+
+        function selectBarcode() {
+            const container = document.getElementById('barcode-container');
+            container.style.display = container.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function previewDNABarcode(event) {
+            const preview = document.getElementById('barcode-preview');
+            const previewImg = document.getElementById('barcode-preview-img');
+            const decodedContent = document.getElementById('decoded-barcode-content');
+
+            if (event.target.files && event.target.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    previewImg.src = e.target.result; // Set the preview image
+                    preview.style.display = 'block';
+                    decodedContent.value = ''; // Clear previous decoded content
+                };
+                reader.readAsDataURL(event.target.files[0]);
+            }
+        }
+
+        function clearDNABarcode() {
+            const fileInput = document.getElementById('dna-barcode-upload');
+            const preview = document.getElementById('barcode-preview');
+            const previewImg = document.getElementById('barcode-preview-img');
+            const decodedContent = document.getElementById('decoded-barcode-content');
+
+            fileInput.value = ''; 
+            preview.style.display = 'none'; 
+            previewImg.src = '#'; 
+            decodedContent.value = ''; // Clear the textarea
+        }
+
+        async function readDNABarcode() {
+            const fileInput = document.getElementById('dna-barcode-upload');
+            const decodedContent = document.getElementById('decoded-barcode-content');
+
+            if (!fileInput.files.length) {
+                alert('Please upload a DNA barcode image before reading.');
+                return;
+            }
+
+            // Initialize MultiFormatReader without hints
+            const barcodeReader = new ZXing.BrowserMultiFormatReader();
+
+            try {
+                decodedContent.value = 'Decoding in progress... Please wait.';
+
+                const file = fileInput.files[0];
+
+                // Convert file to Data URL
+                const fileDataUrl = await convertFileToDataURL(file);
+
+                // Decode the image
+                const result = await barcodeReader.decodeFromImage(undefined, fileDataUrl);
+
+                // Display decoded content
+                decodedContent.value = `Decoded Content:\n${result.text}`;
+                console.log('', result.text);
+                console.log('Detected Format:', result.format); // Log detected format
+            } catch (error) {
+                console.error('Error during barcode decoding:', error);
+                decodedContent.value = 'Unable to decode the barcode. Ensure the image is clear and the barcode type is supported.';
+            }
+        }
+
+function convertFileToDataURL(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (e) => resolve(e.target.result);
+        reader.onerror = (e) => reject(e);
+        reader.readAsDataURL(file);
+    });
+}
+
+    function convertFileToDataURL(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = (e) => resolve(e.target.result);
+            reader.onerror = (e) => reject(e);
+            reader.readAsDataURL(file);
+        });
+    }
+
+</script>    
+<script src="https://cdn.jsdelivr.net/npm/@zxing/library@0.18.6"></script>
+</div>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.0.0/mdb.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.0.0/mdb.min.js"></script>
+
+       
+    
+{% endblock %}

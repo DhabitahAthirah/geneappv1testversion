@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indonesia-GeneBank</title>
+    <!-- Include JsBarcode from CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.0/dist/JsBarcode.all.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- MDB5 CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.0.0/mdb.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@zxing/library@0.18.6"></script>
+    <script src="https://unpkg.com/@zxing/library@0.18.6/umd/index.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-3d/dist/chartjs-chart-3d.min.js"></script>
+    
+        <style>
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .content h1 {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+        .content p {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+        .content button {
+            background-color: #333;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        /* Submenu positioning and animation */
+        .dropdown-submenu {
+          position: relative; /* Allow submenu to position itself relative to parent */
+        }
+
+        .dropdown-submenu .dropdown-menu {
+          position: absolute;
+          top: 0; /* Align with parent */
+          left: 100%; /* Place to the right of parent */
+          margin-top: 0; /* Remove extra spacing */
+          background-color: black !important; /* Match parent dropdown style */
+          opacity: 0; /* Initially hidden */
+          visibility: hidden; /* Prevent interaction when hidden */
+          transform: translateY(-10px); /* Start slightly above for animation */
+          transition: transform 0.3s ease, opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        /* Show submenu on hover or when active */
+        .dropdown-submenu:hover > .dropdown-menu,
+        .dropdown-submenu .dropdown-menu.show {
+          opacity: 1;
+          visibility: visible;
+          transform: translateY(0); /* Slide in */
+        }
+
+        /* Ensure submenu links have the same style */
+        .dropdown-submenu .dropdown-item {
+          color: white !important;
+        }
+
+        .dropdown-submenu .dropdown-item:hover {
+          color: black !important;
+          background-color: white !important;
+        }
+    </style>
+     <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const dropdownSubmenus = document.querySelectorAll('.dropdown-submenu');
+    
+      dropdownSubmenus.forEach((submenu) => {
+        submenu.addEventListener('mouseover', () => {
+          const dropdownMenu = submenu.querySelector('.dropdown-menu');
+          if (dropdownMenu) {
+            dropdownMenu.classList.add('show');
+          }
+        });
+    
+        submenu.addEventListener('mouseout', () => {
+          const dropdownMenu = submenu.querySelector('.dropdown-menu');
+          if (dropdownMenu) {
+            dropdownMenu.classList.remove('show');
+          }
+        });
+      });
+    });
+
+    </script>
+</head>
+<body>
+
+  <nav class="navbar navbar-expand-lg custom-navbar">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="/">
+        <img src="/static/icons/gene.png" width="34" height="34" style="padding-bottom: 3px;">
+        Indonesia-Gene
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNavDropdown">
+        <ul class="navbar-nav me-auto">
+          <!-- Home -->
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/">Home
+              <img src="/static/icons/home.svg" width="20" height="20" style="padding-bottom: 3px;">
+            </a>
+          </li>
+
+          <!-- Submit 
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/submission">Submit
+              <img src="/static/icons/upload.svg"  width="20" height="20" style="padding-bottom: 3px;">
+            </a>
+          </li> 
+          -->
+
+          <!-- Database 
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="databaseDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Database
+              <img src="/static/icons/database.svg" width="20" height="20" style="padding-bottom: 3px;">
+            </a>
+            <ul class="dropdown-menu custom-dropdown-menu" aria-labelledby="databaseDropdown">
+              <li><a class="dropdown-item" href="/genedna">DNA</a></li>
+              <li><a class="dropdown-item" href="/rnadata">RNA</a></li>
+              <li><a class="dropdown-item" href="/proteindata">Protein</a></li>
+            </ul>
+          </li> 
+          Dropdown -->
+
+          <!-- Analysis Dropdown -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="analysisDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Analysis
+              <img src="/static/icons/analysis.svg" width="20" height="20" style="padding-bottom: 3px;">
+            </a>
+            <ul class="dropdown-menu custom-dropdown-menu" aria-labelledby="analysisDropdown">
+              <li><a class="dropdown-item" href="/graph">Gene Graph</a></li>
+              <li><a class="dropdown-item" href="/restriction">Restriction Enzyme</a></li>
+              <li><a class="dropdown-item" href="/speciessearch">Identify Species</a></li>
+            </ul>
+          </li>
+          <!-- Publication Dropdown -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="publicationDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Publication
+              <img src="/static//icons/publication.svg" width="20" height="20" style="padding-bottom: 3px;">
+            </a>
+            <ul class="dropdown-menu custom-dropdown-menu" aria-labelledby="publicationDropdown">
+              <li><a class="dropdown-item" href="/journal">Journals</a></li>
+              <li><a class="dropdown-item" href="/books">Books</a></li>
+              <li><a class="dropdown-item" href="/articles">Articles</a></li>
+            </ul>
+          </li>
+
+          <!-- About Dropdown -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="aboutDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              About
+              <img src="/static/icons/about.svg" width="20" height="20" style="padding-bottom: 3px;">
+            </a>
+            <ul class="dropdown-menu custom-dropdown-menu" aria-labelledby="aboutDropdown">
+              <li><a class="dropdown-item" href="/about">IndonesiaGeneBank</a></li>
+              <li><a class="dropdown-item" href="/people">People</a></li>
+              <li><a class="dropdown-item" href="/advisoryboard">Advisory Board</a></li>
+              <li><a class="dropdown-item" href="/collab">Collaborator</a></li>
+              <li><a class="dropdown-item" href="/history">History</a></li>
+        
+            <li class="dropdown-submenu">
+              <a class="dropdown-item" href="#" id="relatedLinksDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Related Links
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="relatedLinksDropdown">
+                <li><a class="dropdown-item" href="https://www.ncbi.nlm.nih.gov/">NCBI</a></li>
+                <li><a class="dropdown-item" href="https://ngdc.cncb.ac.cn/">NGDC</a></li>
+                <li><a class="dropdown-item" href="https://www.embl.org/">EMBL</a></li>
+                <li><a class="dropdown-item" href="https://www.ddbj.nig.ac.jp/index-e.html">DDBJ Center</a></li>
+              </ul>
+            </li>
+
+            </ul>
+          </li>
+
+
+          <!-- Right Side: Login and 
+            <ul class="navbar-nav" style="margin-left: 550px;">
+              <li class="nav-item" style="margin-left: 20px;">
+                <a class="nav-link" href="/login">Login</a>
+              </li>
+              <li class="nav-item" style="margin-left: 15px;">
+                <a class="nav-link" href="/register">Register</a>
+              </li>
+            </ul>
+            Register -->
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+
+ <style>
+     /* Set the navbar background to black */
+    .custom-navbar {
+      background-color: black !important;
+    }
+  
+    /* Navbar links text color (white) */
+    .custom-navbar .nav-link,
+    .custom-navbar .navbar-brand,
+    .custom-navbar .dropdown-item {
+      color: white !important;
+    }
+  
+    /* Change color to light gray on hover */
+    .custom-navbar .nav-link:hover,
+    .custom-navbar .dropdown-item:hover {
+      color: black !important; /* Light text on dark hover background */
+      background-color: white !important; /* Light background on hover */
+    }
+  
+    /* Custom dropdown menu to match the navbar */
+    .custom-dropdown-menu {
+      background-color: black !important;
+    }
+  
+    /* Set the dropdown font to white */
+    .custom-dropdown-menu .dropdown-item {
+      color: white !important;
+    }
+  
+    /* Hover effect for dropdown items (switch to light theme) */
+    .custom-dropdown-menu .dropdown-item:hover {
+      color: black !important;  /* Black text on hover */
+      background-color: white !important; /* White background on hover */
+    }
+  
+    /* Navbar toggler icon white */
+    .custom-navbar .navbar-toggler-icon {
+      background-image: url('data:image/svg+xml;charset=utf8,%3Csvg viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg"%3E%3Cpath stroke="rgba(255,%20255,%20255,%20255)" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10" d="M4 7h22M4 15h22M4 23h22"%3E%3C/path%3E%3C/svg%3E') !important;
+    }
+  </style>
+
+    <!-- Main content area -->
+    <div class="content">
+        {% block content %}
+
+        {% endblock %}
+       
+    </div>
+
+  <footer class="footer mt-auto bg-black text-light py-4">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-4">
+        <h5 class="text-uppercase">Mitra</h5>
+        <p>Brainy Bee Jl. Joyo Agung Perumahan Graha Dewata Blok Khusus W8 Landungsari Dau Malang-Jawa Timur 65151</p>
+      </div>
+
+           <div class="col-md-4">
+        <h6 class="text-uppercase">Partners</h6>
+        <div class="row">
+          <div class="col-md-2">
+            <img src="static/img/logo1.png" alt="Logo 1" class="img-fluid" style="max-width:60px; height:auto;" class="me-3">
+          </div>
+          <div class="col-md-2">
+            <img src="static/img/logo2.png" alt="Logo 2" class="img-fluid" style="max-width:60px; height:auto;" class="me-3">
+          </div>
+          <div class="col-md-2">
+            <img src="static/img/logo3.png" alt="Logo 3" class="img-fluid" style="max-width:60px; height:auto;" class="me-3">
+          </div>
+          <div class="col-md-2">
+            <img src="static/img/logo4.png" alt="Logo 4" class="img-fluid" style="max-width:60px; height:auto;" class="me-3">
+          </div>
+          <div class="col-md-2">
+            <img src="static/img/logo5.png" alt="Logo 5" class="img-fluid" style="max-width:60px; height:auto;" class="me-3">
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</footer>
+   <!-- This is where specific page content will be injected --> 
+        <!-- MDB5 JS & Font Awesome -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.0.0/mdb.min.js"></script>
+        <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+        <!-- MDB5 JS -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.0.0/mdb.min.js"></script>
+
+        <!-- Bootstrap JS Bundle with Popper.js -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
+</html>

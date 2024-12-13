@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        background-size: cover;
+        background-position: center;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .header-section {
+      position: relative;
+      background: url('static/img/bg.jpg') no-repeat center center/cover;
+      height: 200px;
+    }
+    
+    .header-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.8); /* Dark transparent overlay */
+    }
+    
+    .header-content {
+      position: relative;
+      z-index: 1;
+      color: white;
+      text-align: center;
+      padding-top: 50px;
+    }
+
+    .search-bar {
+      margin-top: -50px;
+      text-align: center;
+    }
+    
+    .search-input {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .card-text {
+      font-size: 14px;
+    }
+  </style>
+
+  <!-- Header Section -->
+  <div class="header-section">
+    <div class="header-overlay"></div>
+    <div class="header-content">
+      <h1>Collaborators</h1>
+    </div>
+  </div>
+
+<h5 class="card-title" style="padding-top: 20px;text-align: center;font-weight: bold;">Our Collaborators</h5>
+<div class="container" style="padding-top: 30px;">
+  <div class="row">
+    <div class="col-md-3">
+      <a href="https://www.unipa.ac.id/" target="_blank">
+        <img src="static/img/logo1.png" class="card-img-top" alt="Universitas Papua" style="max-width: 200px;" />
+      </a>
+    </div>
+
+    <div class="col-md-3">
+      <a href="https://telukcenderawasihnationalpark.com/" target="_blank">
+        <img src="static/img/logo2.png" class="card-img-top"  style="max-width: 200px;"/>
+      </a>
+    </div>
+
+    <div class="col-md-3">
+      <a href="#" target="_blank">
+        <img src="static/img/logo3.png" class="card-img-top" style="max-width: 200px;"/>
+      </a>
+    </div>
+    
+    <div class="col-md-3">
+      <a href="#" target="_blank">
+        <img src="static/img/logo4.png" class="card-img-top"  style="max-width: 200px;"/>
+      </a>
+    </div>
+  </div>
+
+  <!-- Centered row for 2 logos -->
+  <div class="row justify-content-center" style="padding-top:30px;">
+    <div class="col-md-3">
+      <a href="https://www.ub.ac.id/id/" target="_blank">
+        <img src="static/img/logo5.png" class="card-img-top"  style="max-width: 200px;"/>
+      </a>
+    </div>
+
+    <div class="col-md-3">
+      <a href="#" target="_blank">
+        <img src="static/img/logo6.png" class="card-img-top" alt="Brainy Bee" style="max-width: 200px;"/>
+      </a>
+    </div>
+  </div>
+</div>
+
+
+  <!-- MDB5 JS & FontAwesome Icons -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.0.0/mdb.min.js"></script>
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  </section>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <style>
+    .header-section {
+      position: relative;
+      background: url('static/img/bg.jpg') no-repeat center center/cover;
+      height: 200px;
+    }
+    
+    .header-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.8); /* Dark transparent overlay */
+    }
+    
+    .header-content {
+      position: relative;
+      z-index: 1;
+      color: white;
+      text-align: center;
+      padding-top: 50px;
+    }
+
+    .search-bar {
+      margin-top: -50px;
+      text-align: center;
+    }
+    
+    .search-input {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .card-text {
+      font-size: 14px;
+    }
+  </style>
+
+  <!-- Header Section -->
+  <div class="header-section">
+    <div class="header-overlay"></div>
+    <div class="header-content">
+      <h1>Journals</h1>
+       <p>Explore Journals By Our Veriefied Users: </p>
+    </div>
+  </div>
+
+
+  <!-- Search Bar -->
+  <div class="search-bar" style="padding-top:90px;">
+    <div class="search-input">
+      <input type="search" class="form-control" placeholder="Search Journals...">
+    </div>
+  </div>
+
+  <!-- MDB5 JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.0.0/mdb.min.js"></script>
+
+{% endblock %}

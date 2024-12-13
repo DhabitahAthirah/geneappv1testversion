@@ -1,0 +1,805 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+    .header-section {
+      position: relative;
+      background: url('static/img/bg.jpg') no-repeat center center/cover;
+      height: 200px;
+    }
+    
+    .header-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.8); /* Dark transparent overlay */
+    }
+    
+    .header-content {
+      position: relative;
+      z-index: 1;
+      color: white;
+      text-align: center;
+      padding-top: 50px;
+    }
+
+    .search-bar {
+      margin-top: -50px;
+      text-align: center;
+    }
+    
+    .search-input {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .card-text {
+      font-size: 14px;
+    }
+  </style>
+
+  <!-- Header Section -->
+  <div class="header-section">
+    <div class="header-overlay"></div>
+    <div class="header-content">
+      <h1>Gene Graph Tool</h1>
+    </div>
+  </div>
+  
+      <div class="container"style="margin: 15px;margin-right: 15px;margin-bottom: 15px;">
+        <div>
+          <h5 style="font-weight:bold;">Nucleotide Graph Mapping</h5>
+          <h5 style="padding-top:5px;">Query Sequence</h5>
+          <div class="container">
+            <label for="genetic-code-selection" class="form-label">Select Genetic Code</label>
+            <select class="form-select form-select-sm" id="genetic-code-selection" name="GENETIC_CODE" style="width: 200px;">
+              <option value="" selected>Choose Code Type</option>
+              <optgroup label="Mitochondria Code">
+                <option value="vertebrateMitochondrial">The Vertebrate Mitochondrial Code</option>
+                <option value="yeastMitochondrial">The Yeast Mitochondrial Code</option>
+                <option value="moldProtozoanCoelenterateMitochondrial">The Mold, Protozoan, and Coelenterate Mitochondrial Code and the Mycoplasma/Spiroplasma Code</option>
+                <option value="invertebrateMitochondrial">The Invertebrate Mitochondrial Code</option>
+                <option value="echinodermFlatwormMitochondrial">The Echinoderm and Flatworm Mitochondrial Code</option>
+                <option value="ascidianMitochondrial">The Ascidian Mitochondrial Code</option>
+                <option value="alternativeFlatwormMitochondrial">The Alternative Flatworm Mitochondrial Code</option>
+                <option value="trematodeMitochondrial">Trematode Mitochondrial Code</option>
+                <option value="scenedesmusObliquusMitochondrial">Scenedesmus obliquus Mitochondrial Code</option>
+                <option value="thraustochytriumMitochondrial">Thraustochytrium Mitochondrial Code</option>
+                <option value="rhabdopleuridaeMitochondrial">Rhabdopleuridae Mitochondrial Code</option>
+                <option value="cephalodiscidaeMitochondrialUAATyr">Cephalodiscidae Mitochondrial UAA-Tyr Code</option>
+              </optgroup>
+              <optgroup label="Nuclear Code">
+                <option value="ciliateDasycladaceanHexamitaNuclear">The Ciliate, Dasycladacean and Hexamita Nuclear Code</option>
+                <option value="euplotidNuclear">The Euplotid Nuclear Code</option>
+                <option value="alternativeYeastNuclear">The Alternative Yeast Nuclear Code</option>
+                <option value="blepharismaNuclear">Blepharisma Nuclear Code</option>
+                <option value="pachysolenTannophilusNuclear">Pachysolen tannophilus Nuclear Code</option>
+                <option value="karyorelictNuclear">Karyorelict Nuclear Code</option>
+                <option value="condylostomaNuclear">Condylostoma Nuclear Code</option>
+                <option value="mesodiniumNuclear">Mesodinium Nuclear Code</option>
+                <option value="peritrichNuclear">Peritrich Nuclear Code</option>
+                <option value="blastocrithidiaNuclear">Blastocrithidia Nuclear Code</option>
+              </optgroup>
+              <optgroup label="Others">
+                <option value="standardCode">The Standard Code</option>
+                <option value="bacterialArchaealPlantPlastid">The Bacterial, Archaeal and Plant Plastid Code</option>
+                <option value="chlorophyceanMitochondrial">Chlorophycean Mitochondrial Code</option>
+                <option value="candidateDivisionSR1Gracilibacteria">Candidate Division SR1 and Gracilibacteria Code</option>
+              </optgroup>
+            </select>
+          </div>
+                         
+        </div>
+          <div class="container">
+            <form id="blastForm">
+              <label for="sequence">Enter FASTA sequence(s):</label> <br>
+              <div class="form-outline" data-mdb-input-init>
+                <textarea class="form-control" id="dna-sequence" name="dna_sequence" rows="5"></textarea>
+                <label class="form-label" for="textAreaExample">Enter Data</label>
+              </div>
+        
+              <div style="padding-top: 10px;">
+                <button type="button" class="btn btn-primary" onclick="removeSpaces()" 
+                        style="padding: 6px 12px; font-size: 14px; text-transform: none; background-color: #1a237e; border-color: #1a237e;">
+                  Remove Spaces
+                </button>
+                <button type="button" class="btn btn-danger" onclick="clearInput()" 
+                style="padding: 6px 12px; font-size: 14px; text-transform: none; background-color: #b71c1c; border-color: #b71c1c;">
+                 Clear
+               </button>
+                <button type="button" class="btn btn-success" onclick="displayAminoAcidChart()" 
+                        style="padding: 6px 12px; font-size: 14px; text-transform: none; background-color: #2e7d32; border-color: #2e7d32;">
+                  Convert to Amino Acid Chart
+                </button>
+                <button type="button" class="btn btn-warning" onclick="resetGraph()" 
+                        style="padding: 6px 12px; font-size: 14px; text-transform: none; background-color: #ff8f00; border-color: #ff8f00;">
+                  Reset Graph
+                </button>
+              </div>                    
+            </form>
+          </div>
+          
+          <div class="container" style="padding-left: 20px;">
+     
+              <!-- Left Column -->
+          
+                <h5 class="text-center" style="font-weight: 700; color: #2b2b2b; margin-bottom: 15px;">Amino Acid Chart</h5>
+                <div class="chart-container">
+                  <canvas id="aminoAcidChart" width="900" height="400"></canvas>
+                  <p id="chart-caption" style="text-align: center; font-weight: bold; margin-top: 10px;"></p>
+                </div>
+                <div class="text-center" style="margin-top: 15px;">
+                  <!-- Dropdown Menu for Download -->
+                  <div class="btn-group">
+                    <button class="btn btn-info dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="padding: 6px 12px; font-size: 14px; text-transform: none;">
+                      Download Chart
+                    </button>
+                    <ul class="dropdown-menu">
+                      <li><a class="dropdown-item" href="#" onclick="downloadChart('png')">Download as PNG </a></li>
+                      <li><a class="dropdown-item" href="#" onclick="downloadChart('jpg')">Download as JPG</a></li>
+                      <li><a class="dropdown-item" href="#" onclick="downloadChart('svg')">Download as SVG</a></li>
+                    </ul>
+                  </div>
+                </div>
+          
+          </div>                                  
+          <!-- Modal for bar chart -->
+          <div class="modal fade" id="aminoAcidModal" tabindex="-1" aria-labelledby="aminoAcidModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="aminoAcidModalLabel">Amino Acid Details</h5>
+        
+                </div>
+                <div class="modal-body">
+                  <h6 id="aminoAcidName"></h6>
+                  <div style="text-align: center;">
+                    <div class="row">
+                      <div class="col-md-6">
+                        <img id="aminoAcidImage" src="" alt="Amino Acid Diagram" class="img-fluid" style="max-height: 250px;">
+                        <p id ="aminoAcidImgCred" style="font-size:10px;"></p>
+                      </div>
+                      <div class="col-md-6">
+                        <img id="aminoAcidImage2" src="" alt="Amino Acid Diagram" class="img-fluid" style="max-height: 250px;">
+                        <p id ="aminoAcidImgCred2" style="font-size:10px;"></p>
+                      </div>
+                    </div>
+                  </div>
+                  <p id="aminoAcidDescription" style="padding-top: 15px;"></p>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="padding: 6px 12px; font-size: 14px; text-transform: none;">Close</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Modal for Amino Acid Details -->
+          <div class="modal fade" id="aminoAcidDetailModal" tabindex="-1" aria-labelledby="aminoAcidDetailModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="aminoAcidDetailModalLabel">Amino Acid Details</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="aminoAcidDetailBody">
+                  <!-- Dynamic Content for Amino Acid Details -->
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <script>
+            const codonTables = 
+            {
+                  "vertebrateMitochondrial": {
+                    "TTT": "F", "TTC": "F", "TTA": "L", "TTG": "L", "CTT": "L", "CTC": "L", "CTA": "L", "CTG": "L",
+                    "ATT": "I", "ATC": "I", "ATA": "M", "ATG": "M", "GTT": "V", "GTC": "V", "GTA": "V", "GTG": "V",
+                    "TCT": "S", "TCC": "S", "TCA": "S", "TCG": "S", "CCT": "P", "CCC": "P", "CCA": "P", "CCG": "P",
+                    "ACT": "T", "ACC": "T", "ACA": "T", "ACG": "T", "GCT": "A", "GCC": "A", "GCA": "A", "GCG": "A",
+                    "TAT": "Y", "TAC": "Y", "TAA": "Stop", "TAG": "Stop", "CAT": "H", "CAC": "H", "CAA": "Q", "CAG": "Q",
+                    "AAT": "N", "AAC": "N", "AAA": "K", "AAG": "K", "GAT": "D", "GAC": "D", "GAA": "E", "GAG": "E",
+                    "TGT": "C", "TGC": "C", "TGA": "W", "TGG": "W", "CGT": "R", "CGC": "R", "CGA": "R", "CGG": "R",
+                    "AGT": "S", "AGC": "S", "AGA": "Stop", "AGG": "Stop", "GGT": "G", "GGC": "G", "GGA": "G", "GGG": "G"
+                  },
+
+                   "yeastMitochondrial": {
+                    "TTT": "F", "TTC": "F", "TTA": "L", "TTG": "L", "CTT": "T", "CTC": "T", "CTA": "T", "CTG": "T",
+                    "ATT": "I", "ATC": "I", "ATA": "M", "ATG": "M", "GTT": "V", "GTC": "V", "GTA": "V", "GTG": "V",
+                    "TCT": "S", "TCC": "S", "TCA": "S", "TCG": "S", "CCT": "P", "CCC": "P", "CCA": "P", "CCG": "P",
+                    "ACT": "T", "ACC": "T", "ACA": "T", "ACG": "T", "GCT": "A", "GCC": "A", "GCA": "A", "GCG": "A",
+                    "TAT": "Y", "TAC": "Y", "TAA": "Stop", "TAG": "Stop", "CAT": "H", "CAC": "H", "CAA": "Q", "CAG": "Q",
+                    "AAT": "N", "AAC": "N", "AAA": "K", "AAG": "K", "GAT": "D", "GAC": "D", "GAA": "E", "GAG": "E",
+                    "TGT": "C", "TGC": "C", "TGA": "W", "TGG": "W", "CGT": "R", "CGC": "R", "CGA": "R", "CGG": "R",
+                    "AGT": "S", "AGC": "S", "AGA": "R", "AGG": "R", "GGT": "G", "GGC": "G", "GGA": "G", "GGG": "G"
+                  },
+                  "standardCode": {
+                    "TTT": "F", "TTC": "F", "TTA": "L", "TTG": "L", "CTT": "L", "CTC": "L", "CTA": "L", "CTG": "L",
+                    "ATT": "I", "ATC": "I", "ATA": "I", "ATG": "M", "GTT": "V", "GTC": "V", "GTA": "V", "GTG": "V",
+                    "TCT": "S", "TCC": "S", "TCA": "S", "TCG": "S", "CCT": "P", "CCC": "P", "CCA": "P", "CCG": "P",
+                    "ACT": "T", "ACC": "T", "ACA": "T", "ACG": "T", "GCT": "A", "GCC": "A", "GCA": "A", "GCG": "A",
+                    "TAT": "Y", "TAC": "Y", "TAA": "Stop", "TAG": "Stop", "CAT": "H", "CAC": "H", "CAA": "Q", "CAG": "Q",
+                    "AAT": "N", "AAC": "N", "AAA": "K", "AAG": "K", "GAT": "D", "GAC": "D", "GAA": "E", "GAG": "E",
+                    "TGT": "C", "TGC": "C", "TGA": "Stop", "TGG": "W", "CGT": "R", "CGC": "R", "CGA": "R", "CGG": "R",
+                    "AGT": "S", "AGC": "S", "AGA": "R", "AGG": "R", "GGT": "G", "GGC": "G", "GGA": "G", "GGG": "G"
+                  },
+                  "moldProtozoanCoelenterateMitochondrial": {
+                  "TTT": "F", "TTC": "F", "TTA": "L", "TTG": "L", "CTT": "L", "CTC": "L", "CTA": "L", "CTG": "L",
+                  "ATT": "I", "ATC": "I", "ATA": "M", "ATG": "M", "GTT": "V", "GTC": "V", "GTA": "V", "GTG": "V",
+                  "TCT": "S", "TCC": "S", "TCA": "S", "TCG": "S", "CCT": "P", "CCC": "P", "CCA": "P", "CCG": "P",
+                  "ACT": "T", "ACC": "T", "ACA": "T", "ACG": "T", "GCT": "A", "GCC": "A", "GCA": "A", "GCG": "A",
+                  "TAT": "Y", "TAC": "Y", "TAA": "Stop", "TAG": "Stop", "CAT": "H", "CAC": "H", "CAA": "Q", "CAG": "Q",
+                  "AAT": "N", "AAC": "N", "AAA": "K", "AAG": "K", "GAT": "D", "GAC": "D", "GAA": "E", "GAG": "E",
+                  "TGT": "C", "TGC": "C", "TGA": "W", "TGG": "W", "CGT": "R", "CGC": "R", "CGA": "R", "CGG": "R",
+                  "AGT": "S", "AGC": "S", "AGA": "R", "AGG": "R", "GGT": "G", "GGC": "G", "GGA": "G", "GGG": "G"
+                },
+                "invertebrateMitochondrial": {
+                  "TTT": "F", "TTC": "F", "TTA": "L", "TTG": "L", "CTT": "L", "CTC": "L", "CTA": "L", "CTG": "L",
+                  "ATT": "I", "ATC": "I", "ATA": "M", "ATG": "M", "GTT": "V", "GTC": "V", "GTA": "V", "GTG": "V",
+                  "TCT": "S", "TCC": "S", "TCA": "S", "TCG": "S", "CCT": "P", "CCC": "P", "CCA": "P", "CCG": "P",
+                  "ACT": "T", "ACC": "T", "ACA": "T", "ACG": "T", "GCT": "A", "GCC": "A", "GCA": "A", "GCG": "A",
+                  "TAT": "Y", "TAC": "Y", "TAA": "Stop", "TAG": "Stop", "CAT": "H", "CAC": "H", "CAA": "Q", "CAG": "Q",
+                  "AAT": "N", "AAC": "N", "AAA": "K", "AAG": "K", "GAT": "D", "GAC": "D", "GAA": "E", "GAG": "E",
+                  "TGT": "C", "TGC": "C", "TGA": "W", "TGG": "W", "CGT": "R", "CGC": "R", "CGA": "R", "CGG": "R",
+                  "AGT": "S", "AGC": "S", "AGA": "R", "AGG": "R", "GGT": "G", "GGC": "G", "GGA": "G", "GGG": "G"
+                },
+                "echinodermFlatwormMitochondrial": {
+                  "TTT": "F", "TTC": "F", "TTA": "L", "TTG": "L", "CTT": "L", "CTC": "L", "CTA": "L", "CTG": "L",
+                  "ATT": "I", "ATC": "I", "ATA": "M", "ATG": "M", "GTT": "V", "GTC": "V", "GTA": "V", "GTG": "V",
+                  "TCT": "S", "TCC": "S", "TCA": "S", "TCG": "S", "CCT": "P", "CCC": "P", "CCA": "P", "CCG": "P",
+                  "ACT": "T", "ACC": "T", "ACA": "T", "ACG": "T", "GCT": "A", "GCC": "A", "GCA": "A", "GCG": "A",
+                  "TAT": "Y", "TAC": "Y", "TAA": "Stop", "TAG": "Stop", "CAT": "H", "CAC": "H", "CAA": "Q", "CAG": "Q",
+                  "AAT": "N", "AAC": "N", "AAA": "K", "AAG": "K", "GAT": "D", "GAC": "D", "GAA": "E", "GAG": "E",
+                  "TGT": "C", "TGC": "C", "TGA": "W", "TGG": "W", "CGT": "R", "CGC": "R", "CGA": "R", "CGG": "R",
+                  "AGT": "S", "AGC": "S", "AGA": "S", "AGG": "S", "GGT": "G", "GGC": "G", "GGA": "G", "GGG": "G"
+                },
+                "ascidianMitochondrial": {
+                  "TTT": "F", "TTC": "F", "TTA": "L", "TTG": "L", "CTT": "L", "CTC": "L", "CTA": "L", "CTG": "L",
+                  "ATT": "I", "ATC": "I", "ATA": "M", "ATG": "M", "GTT": "V", "GTC": "V", "GTA": "V", "GTG": "V",
+                  "TCT": "S", "TCC": "S", "TCA": "S", "TCG": "S", "CCT": "P", "CCC": "P", "CCA": "P", "CCG": "P",
+                  "ACT": "T", "ACC": "T", "ACA": "T", "ACG": "T", "GCT": "A", "GCC": "A", "GCA": "A", "GCG": "A",
+                  "TAT": "Y", "TAC": "Y", "TAA": "Stop", "TAG": "Stop", "CAT": "H", "CAC": "H", "CAA": "Q", "CAG": "Q",
+                  "AAT": "N", "AAC": "N", "AAA": "K", "AAG": "K", "GAT": "D", "GAC": "D", "GAA": "E", "GAG": "E",
+                  "TGT": "C", "TGC": "C", "TGA": "W", "TGG": "W", "CGT": "R", "CGC": "R", "CGA": "R", "CGG": "R",
+                  "AGT": "S", "AGC": "S", "AGA": "G", "AGG": "G", "GGT": "G", "GGC": "G", "GGA": "G", "GGG": "G"
+                },
+                "alternativeFlatwormMitochondrial": {
+                  "TTT": "F", "TTC": "F", "TTA": "L", "TTG": "L", "CTT": "L", "CTC": "L", "CTA": "L", "CTG": "L",
+                  "ATT": "I", "ATC": "I", "ATA": "M", "ATG": "M", "GTT": "V", "GTC": "V", "GTA": "V", "GTG": "V",
+                  "TCT": "S", "TCC": "S", "TCA": "S", "TCG": "S", "CCT": "P", "CCC": "P", "CCA": "P", "CCG": "P",
+                  "ACT": "T", "ACC": "T", "ACA": "T", "ACG": "T", "GCT": "A", "GCC": "A", "GCA": "A", "GCG": "A",
+                  "TAT": "Y", "TAC": "Y", "TAA": "Stop", "TAG": "Stop", "CAT": "H", "CAC": "H", "CAA": "Q", "CAG": "Q",
+                  "AAT": "N", "AAC": "N", "AAA": "K", "AAG": "K", "GAT": "D", "GAC": "D", "GAA": "E", "GAG": "E",
+                  "TGT": "C", "TGC": "C", "TGA": "W", "TGG": "W", "CGT": "R", "CGC": "R", "CGA": "R", "CGG": "R",
+                  "AGT": "S", "AGC": "S", "AGA": "S", "AGG": "S", "GGT": "G", "GGC": "G", "GGA": "G", "GGG": "G"
+                },
+                "trematodeMitochondrial": {
+                  "TTT": "F", "TTC": "F", "TTA": "L", "TTG": "L", "CTT": "L", "CTC": "L", "CTA": "L", "CTG": "L",
+                  "ATT": "I", "ATC": "I", "ATA": "M", "ATG": "M", "GTT": "V", "GTC": "V", "GTA": "V", "GTG": "V",
+                  "TCT": "S", "TCC": "S", "TCA": "S", "TCG": "S", "CCT": "P", "CCC": "P", "CCA": "P", "CCG": "P",
+                  "ACT": "T", "ACC": "T", "ACA": "T", "ACG": "T", "GCT": "A", "GCC": "A", "GCA": "A", "GCG": "A",
+                  "TAT": "Y", "TAC": "Y", "TAA": "Stop", "TAG": "Stop", "CAT": "H", "CAC": "H", "CAA": "Q", "CAG": "Q",
+                  "AAT": "N", "AAC": "N", "AAA": "K", "AAG": "K", "GAT": "D", "GAC": "D", "GAA": "E", "GAG": "E",
+                  "TGT": "C", "TGC": "C", "TGA": "W", "TGG": "W", "CGT": "R", "CGC": "R", "CGA": "R", "CGG": "R",
+                  "AGT": "S", "AGC": "S", "AGA": "S", "AGG": "S", "GGT": "G", "GGC": "G", "GGA": "G", "GGG": "G"
+                },
+                "scenedesmusObliquusMitochondrial": {
+                  "TTT": "F", "TTC": "F", "TTA": "L", "TTG": "L", "CTT": "L", "CTC": "L", "CTA": "L", "CTG": "L",
+                  "ATT": "I", "ATC": "I", "ATA": "M", "ATG": "M", "GTT": "V", "GTC": "V", "GTA": "V", "GTG": "V",
+                  "TCT": "S", "TCC": "S", "TCA": "S", "TCG": "S", "CCT": "P", "CCC": "P", "CCA": "P", "CCG": "P",
+                  "ACT": "T", "ACC": "T", "ACA": "T", "ACG": "T", "GCT": "A", "GCC": "A", "GCA": "A", "GCG": "A",
+                  "TAT": "Y", "TAC": "Y", "TAA": "Stop", "TAG": "Stop", "CAT": "H", "CAC": "H", "CAA": "Q", "CAG": "Q",
+                  "AAT": "N", "AAC": "N", "AAA": "K", "AAG": "K", "GAT": "D", "GAC": "D", "GAA": "E", "GAG": "E",
+                  "TGT": "C", "TGC": "C", "TGA": "W", "TGG": "W", "CGT": "R", "CGC": "R", "CGA": "R", "CGG": "R",
+                  "AGT": "S", "AGC": "S", "AGA": "R", "AGG": "R", "GGT": "G", "GGC": "G", "GGA": "G", "GGG": "G"
+                },
+                "thraustochytriumMitochondrial": {
+                  "TTT": "F", "TTC": "F", "TTA": "L", "TTG": "L", "CTT": "L", "CTC": "L", "CTA": "L", "CTG": "L",
+                  "ATT": "I", "ATC": "I", "ATA": "M", "ATG": "M", "GTT": "V", "GTC": "V", "GTA": "V", "GTG": "V",
+                  "TCT": "S", "TCC": "S", "TCA": "S", "TCG": "S", "CCT": "P", "CCC": "P", "CCA": "P", "CCG": "P",
+                  "ACT": "T", "ACC": "T", "ACA": "T", "ACG": "T", "GCT": "A", "GCC": "A", "GCA": "A", "GCG": "A",
+                  "TAT": "Y", "TAC": "Y", "TAA": "Stop", "TAG": "Stop", "CAT": "H", "CAC": "H", "CAA": "Q", "CAG": "Q",
+                  "AAT": "N", "AAC": "N", "AAA": "K", "AAG": "K", "GAT": "D", "GAC": "D", "GAA": "E", "GAG": "E",
+                  "TGT": "C", "TGC": "C", "TGA": "W", "TGG": "W", "CGT": "R", "CGC": "R", "CGA": "R", "CGG": "R",
+                  "AGT": "S", "AGC": "S", "AGA": "Stop", "AGG": "Stop", "GGT": "G", "GGC": "G", "GGA": "G", "GGG": "G"
+                },
+                "rhabdopleuridaeMitochondrial": {
+                  "TTT": "F", "TTC": "F", "TTA": "L", "TTG": "L", "CTT": "L", "CTC": "L", "CTA": "L", "CTG": "L",
+                  "ATT": "I", "ATC": "I", "ATA": "M", "ATG": "M", "GTT": "V", "GTC": "V", "GTA": "V", "GTG": "V",
+                  "TCT": "S", "TCC": "S", "TCA": "S", "TCG": "S", "CCT": "P", "CCC": "P", "CCA": "P", "CCG": "P",
+                  "ACT": "T", "ACC": "T", "ACA": "T", "ACG": "T", "GCT": "A", "GCC": "A", "GCA": "A", "GCG": "A",
+                  "TAT": "Y", "TAC": "Y", "TAA": "Stop", "TAG": "Stop", "CAT": "H", "CAC": "H", "CAA": "Q", "CAG": "Q",
+                  "AAT": "N", "AAC": "N", "AAA": "K", "AAG": "K", "GAT": "D", "GAC": "D", "GAA": "E", "GAG": "E",
+                  "TGT": "C", "TGC": "C", "TGA": "W", "TGG": "W", "CGT": "R", "CGC": "R", "CGA": "R", "CGG": "R",
+                  "AGT": "S", "AGC": "S", "AGA": "S", "AGG": "K", "GGT": "G", "GGC": "G", "GGA": "G", "GGG": "G"
+                },
+                "cephalodiscidaeMitochondrialUAATyr": {
+                    "TTT": "F", "TTC": "F", "TTA": "L", "TTG": "L", "CTT": "L", "CTC": "L", "CTA": "L", "CTG": "L",
+                    "ATT": "I", "ATC": "I", "ATA": "M", "ATG": "M", "GTT": "V", "GTC": "V", "GTA": "V", "GTG": "V",
+                    "TCT": "S", "TCC": "S", "TCA": "S", "TCG": "S", "CCT": "P", "CCC": "P", "CCA": "P", "CCG": "P",
+                    "ACT": "T", "ACC": "T", "ACA": "T", "ACG": "T", "GCT": "A", "GCC": "A", "GCA": "A", "GCG": "A",
+                    "TAT": "Y", "TAC": "Y", "TAA": "Y", "TAG": "Stop", "CAT": "H", "CAC": "H", "CAA": "Q", "CAG": "Q",
+                    "AAT": "N", "AAC": "N", "AAA": "K", "AAG": "K", "GAT": "D", "GAC": "D", "GAA": "E", "GAG": "E",
+                    "TGT": "C", "TGC": "C", "TGA": "W", "TGG": "W", "CGT": "R", "CGC": "R", "CGA": "R", "CGG": "R",
+                    "AGT": "S", "AGC": "S", "AGA": "S", "AGG": "K", "GGT": "G", "GGC": "G", "GGA": "G", "GGG": "G"
+                },
+                "cateDasycladaceanHexamitaNuclear": {
+                  "TTT": "F", "TTC": "F", "TTA": "L", "TTG": "L", "CTT": "L", "CTC": "L", "CTA": "L", "CTG": "L",
+                  "ATT": "I", "ATC": "I", "ATA": "I", "ATG": "M", "GTT": "V", "GTC": "V", "GTA": "V", "GTG": "V",
+                  "TCT": "S", "TCC": "S", "TCA": "S", "TCG": "S", "CCT": "P", "CCC": "P", "CCA": "P", "CCG": "P",
+                  "ACT": "T", "ACC": "T", "ACA": "T", "ACG": "T", "GCT": "A", "GCC": "A", "GCA": "A", "GCG": "A",
+                  "TAT": "Y", "TAC": "Y", "TAA": "Q", "TAG": "Q", "CAT": "H", "CAC": "H", "CAA": "Q", "CAG": "Q",
+                  "AAT": "N", "AAC": "N", "AAA": "K", "AAG": "K", "GAT": "D", "GAC": "D", "GAA": "E", "GAG": "E",
+                  "TGT": "C", "TGC": "C", "TGA": "W", "TGG": "W", "CGT": "R", "CGC": "R", "CGA": "R", "CGG": "R",
+                  "AGT": "S", "AGC": "S", "AGA": "R", "AGG": "R", "GGT": "G", "GGC": "G", "GGA": "G", "GGG": "G"
+                },
+                "euplotidNuclear": {
+                  "TTT": "F", "TTC": "F", "TTA": "L", "TTG": "L", "CTT": "L", "CTC": "L", "CTA": "L", "CTG": "L",
+                  "ATT": "I", "ATC": "I", "ATA": "I", "ATG": "M", "GTT": "V", "GTC": "V", "GTA": "V", "GTG": "V",
+                  "TCT": "S", "TCC": "S", "TCA": "S", "TCG": "S", "CCT": "P", "CCC": "P", "CCA": "P", "CCG": "P",
+                  "ACT": "T", "ACC": "T", "ACA": "T", "ACG": "T", "GCT": "A", "GCC": "A", "GCA": "A", "GCG": "A",
+                  "TAT": "Y", "TAC": "Y", "TAA": "Stop", "TAG": "Stop", "CAT": "H", "CAC": "H", "CAA": "Q", "CAG": "Q",
+                  "AAT": "N", "AAC": "N", "AAA": "K", "AAG": "K", "GAT": "D", "GAC": "D", "GAA": "E", "GAG": "E",
+                  "TGT": "C", "TGC": "C", "TGA": "C", "TGG": "W", "CGT": "R", "CGC": "R", "CGA": "R", "CGG": "R",
+                  "AGT": "S", "AGC": "S", "AGA": "R", "AGG": "R", "GGT": "G", "GGC": "G", "GGA": "G", "GGG": "G"
+                }, 
+                "blepharismaNuclear": {
+                  "TTT": "F", "TTC": "F", "TTA": "L", "TTG": "L", "CTT": "L", "CTC": "L", "CTA": "L", "CTG": "L",
+                  "ATT": "I", "ATC": "I", "ATA": "I", "ATG": "M", "GTT": "V", "GTC": "V", "GTA": "V", "GTG": "V",
+                  "TCT": "S", "TCC": "S", "TCA": "S", "TCG": "S", "CCT": "P", "CCC": "P", "CCA": "P", "CCG": "P",
+                  "ACT": "T", "ACC": "T", "ACA": "T", "ACG": "T", "GCT": "A", "GCC": "A", "GCA": "A", "GCG": "A",
+                  "TAT": "Y", "TAC": "Y", "TAA": "Q", "TAG": "Q", "CAT": "H", "CAC": "H", "CAA": "Q", "CAG": "Q",
+                  "AAT": "N", "AAC": "N", "AAA": "K", "AAG": "K", "GAT": "D", "GAC": "D", "GAA": "E", "GAG": "E",
+                  "TGT": "C", "TGC": "C", "TGA": "W", "TGG": "W", "CGT": "R", "CGC": "R", "CGA": "R", "CGG": "R",
+                  "AGT": "S", "AGC": "S", "AGA": "R", "AGG": "R", "GGT": "G", "GGC": "G", "GGA": "G", "GGG": "G"
+                },
+
+                "pachysolenTannophilusNuclear": {
+                  "TTT": "F", "TTC": "F", "TTA": "L", "TTG": "L", "CTT": "L", "CTC": "L", "CTA": "L", "CTG": "L",
+                  "ATT": "I", "ATC": "I", "ATA": "I", "ATG": "M", "GTT": "V", "GTC": "V", "GTA": "V", "GTG": "V",
+                  "TCT": "S", "TCC": "S", "TCA": "S", "TCG": "S", "CCT": "P", "CCC": "P", "CCA": "P", "CCG": "P",
+                  "ACT": "T", "ACC": "T", "ACA": "T", "ACG": "T", "GCT": "A", "GCC": "A", "GCA": "A", "GCG": "A",
+                  "TAT": "Y", "TAC": "Y", "TAA": "Q", "TAG": "Q", "CAT": "H", "CAC": "H", "CAA": "Q", "CAG": "Q",
+                  "AAT": "N", "AAC": "N", "AAA": "K", "AAG": "K", "GAT": "D", "GAC": "D", "GAA": "E", "GAG": "E",
+                  "TGT": "C", "TGC": "C", "TGA": "W", "TGG": "W", "CGT": "R", "CGC": "R", "CGA": "R", "CGG": "R",
+                  "AGT": "S", "AGC": "S", "AGA": "R", "AGG": "R", "GGT": "G", "GGC": "G", "GGA": "G", "GGG": "G"
+                },
+                "karyorelictNuclear": {
+                  "TTT": "F", "TTC": "F", "TTA": "L", "TTG": "L", "CTT": "L", "CTC": "L", "CTA": "L", "CTG": "L",
+                  "ATT": "I", "ATC": "I", "ATA": "I", "ATG": "M", "GTT": "V", "GTC": "V", "GTA": "V", "GTG": "V",
+                  "TCT": "S", "TCC": "S", "TCA": "S", "TCG": "S", "CCT": "P", "CCC": "P", "CCA": "P", "CCG": "P",
+                  "ACT": "T", "ACC": "T", "ACA": "T", "ACG": "T", "GCT": "A", "GCC": "A", "GCA": "A", "GCG": "A",
+                  "TAT": "Y", "TAC": "Y", "TAA": "Q", "TAG": "Q", "CAT": "H", "CAC": "H", "CAA": "Q", "CAG": "Q",
+                  "AAT": "N", "AAC": "N", "AAA": "K", "AAG": "K", "GAT": "D", "GAC": "D", "GAA": "E", "GAG": "E",
+                  "TGT": "C", "TGC": "C", "TGA": "C", "TGG": "W", "CGT": "R", "CGC": "R", "CGA": "R", "CGG": "R",
+                  "AGT": "S", "AGC": "S", "AGA": "R", "AGG": "R", "GGT": "G", "GGC": "G", "GGA": "G", "GGG": "G"
+                },
+                "condylostomaNuclear": {
+                  "TTT": "F", "TTC": "F", "TTA": "L", "TTG": "L", "CTT": "L", "CTC": "L", "CTA": "L", "CTG": "L",
+                  "ATT": "I", "ATC": "I", "ATA": "I", "ATG": "M", "GTT": "V", "GTC": "V", "GTA": "V", "GTG": "V",
+                  "TCT": "S", "TCC": "S", "TCA": "S", "TCG": "S", "CCT": "P", "CCC": "P", "CCA": "P", "CCG": "P",
+                  "ACT": "T", "ACC": "T", "ACA": "T", "ACG": "T", "GCT": "A", "GCC": "A", "GCA": "A", "GCG": "A",
+                  "TAT": "Y", "TAC": "Y", "TAA": "Q", "TAG": "Q", "CAT": "H", "CAC": "H", "CAA": "Q", "CAG": "Q",
+                  "AAT": "N", "AAC": "N", "AAA": "K", "AAG": "K", "GAT": "D", "GAC": "D", "GAA": "E", "GAG": "E",
+                  "TGT": "C", "TGC": "C", "TGA": "W", "TGG": "W", "CGT": "R", "CGC": "R", "CGA": "R", "CGG": "R",
+                  "AGT": "S", "AGC": "S", "AGA": "R", "AGG": "R", "GGT": "G", "GGC": "G", "GGA": "G", "GGG": "G"
+                },
+                "mesodiniumNuclear": {
+                  "TTT": "F", "TTC": "F", "TTA": "L", "TTG": "L", "CTT": "L", "CTC": "L", "CTA": "L", "CTG": "L",
+                  "ATT": "I", "ATC": "I", "ATA": "I", "ATG": "M", "GTT": "V", "GTC": "V", "GTA": "V", "GTG": "V",
+                  "TCT": "S", "TCC": "S", "TCA": "S", "TCG": "S", "CCT": "P", "CCC": "P", "CCA": "P", "CCG": "P",
+                  "ACT": "T", "ACC": "T", "ACA": "T", "ACG": "T", "GCT": "A", "GCC": "A", "GCA": "A", "GCG": "A",
+                  "TAT": "Y", "TAC": "Y", "TAA": "Y", "TAG": "Y", "CAT": "H", "CAC": "H", "CAA": "Q", "CAG": "Q",
+                  "AAT": "N", "AAC": "N", "AAA": "K", "AAG": "K", "GAT": "D", "GAC": "D", "GAA": "E", "GAG": "E",
+                  "TGT": "C", "TGC": "C", "TGA": "W", "TGG": "W", "CGT": "R", "CGC": "R", "CGA": "R", "CGG": "R",
+                  "AGT": "S", "AGC": "S", "AGA": "R", "AGG": "R", "GGT": "G", "GGC": "G", "GGA": "G", "GGG": "G"
+                },
+
+                "peritrichNuclear": {
+                  "TTT": "F", "TTC": "F", "TTA": "L", "TTG": "L", "CTT": "L", "CTC": "L", "CTA": "L", "CTG": "L",
+                  "ATT": "I", "ATC": "I", "ATA": "I", "ATG": "M", "GTT": "V", "GTC": "V", "GTA": "V", "GTG": "V",
+                  "TCT": "S", "TCC": "S", "TCA": "S", "TCG": "S", "CCT": "P", "CCC": "P", "CCA": "P", "CCG": "P",
+                  "ACT": "T", "ACC": "T", "ACA": "T", "ACG": "T", "GCT": "A", "GCC": "A", "GCA": "A", "GCG": "A",
+                  "TAT": "Y", "TAC": "Y", "TAA": "E", "TAG": "E", "CAT": "H", "CAC": "H", "CAA": "Q", "CAG": "Q",
+                  "AAT": "N", "AAC": "N", "AAA": "K", "AAG": "K", "GAT": "D", "GAC": "D", "GAA": "E", "GAG": "E",
+                  "TGT": "C", "TGC": "C", "TGA": "W", "TGG": "W", "CGT": "R", "CGC": "R", "CGA": "R", "CGG": "R",
+                  "AGT": "S", "AGC": "S", "AGA": "R", "AGG": "R", "GGT": "G", "GGC": "G", "GGA": "G", "GGG": "G"
+                },
+                "blastocrithidiaNuclear": {
+                  "TTT": "F", "TTC": "F", "TTA": "L", "TTG": "L", "CTT": "L", "CTC": "L", "CTA": "L", "CTG": "L",
+                  "ATT": "I", "ATC": "I", "ATA": "I", "ATG": "M", "GTT": "V", "GTC": "V", "GTA": "V", "GTG": "V",
+                  "TCT": "S", "TCC": "S", "TCA": "S", "TCG": "S", "CCT": "P", "CCC": "P", "CCA": "P", "CCG": "P",
+                  "ACT": "T", "ACC": "T", "ACA": "T", "ACG": "T", "GCT": "A", "GCC": "A", "GCA": "A", "GCG": "A",
+                  "TAT": "Y", "TAC": "Y", "TAA": "Q", "TAG": "Q", "CAT": "H", "CAC": "H", "CAA": "Q", "CAG": "Q",
+                  "AAT": "N", "AAC": "N", "AAA": "K", "AAG": "K", "GAT": "D", "GAC": "D", "GAA": "E", "GAG": "E",
+                  "TGT": "C", "TGC": "C", "TGA": "W", "TGG": "W", "CGT": "R", "CGC": "R", "CGA": "R", "CGG": "R",
+                  "AGT": "S", "AGC": "S", "AGA": "R", "AGG": "G", "GGT": "G", "GGC": "G", "GGA": "G", "GGG": "G"
+                },
+                "standardCode": {
+                  "TTT": "F", "TTC": "F", "TTA": "L", "TTG": "L", "CTT": "L", "CTC": "L", "CTA": "L", "CTG": "L",
+                  "ATT": "I", "ATC": "I", "ATA": "I", "ATG": "M", "GTT": "V", "GTC": "V", "GTA": "V", "GTG": "V",
+                  "TCT": "S", "TCC": "S", "TCA": "S", "TCG": "S", "CCT": "P", "CCC": "P", "CCA": "P", "CCG": "P", 
+                  "ACT": "T", "ACC": "T", "ACA": "T", "ACG": "T", "GCT": "A", "GCC": "A", "GCA": "A", "GCG": "A",
+                  "TAT": "Y", "TAC": "Y", "TAA": "*", "TAG": "*", "CAT": "H", "CAC": "H", "CAA": "Q", "CAG": "Q",
+                  "AAT": "N", "AAC": "N", "AAA": "K", "AAG": "K", "GAT": "D", "GAC": "D", "GAA": "E", "GAG": "E",
+                  "TGT": "C", "TGC": "C", "TGA": "*", "TGG": "W", "CGT": "R", "CGC": "R", "CGA": "R", "CGG": "R",
+                  "AGT": "S", "AGC": "S", "AGA": "R", "AGG": "R", "GGT": "G", "GGC": "G", "GGA": "G", "GGG": "G"
+                },
+                "bacterialArchaealPlantPlastid": {
+                "TTT": "F", "TTC": "F", "TTA": "L", "TTG": "L", "CTT": "L", "CTC": "L", "CTA": "L", "CTG": "L",
+                "ATT": "I", "ATC": "I", "ATA": "I", "ATG": "M", "GTT": "V", "GTC": "V", "GTA": "V", "GTG": "V",
+                "TCT": "S", "TCC": "S", "TCA": "S", "TCG": "S", "CCT": "P", "CCC": "P", "CCA": "P", "CCG": "P",
+                "ACT": "T", "ACC": "T", "ACA": "T", "ACG": "T", "GCT": "A", "GCC": "A", "GCA": "A", "GCG": "A",
+                "TAT": "Y", "TAC": "Y", "TAA": "*", "TAG": "*", "CAT": "H", "CAC": "H", "CAA": "Q", "CAG": "Q",
+                "AAT": "N", "AAC": "N", "AAA": "K", "AAG": "K", "GAT": "D", "GAC": "D", "GAA": "E", "GAG": "E",
+                "TGT": "C", "TGC": "C", "TGA": "W", "TGG": "W", "CGT": "R", "CGC": "R", "CGA": "R", "CGG": "R",
+                "AGT": "S", "AGC": "S", "AGA": "R", "AGG": "R", "GGT": "G", "GGC": "G", "GGA": "G", "GGG": "G"
+              },
+              "chlorophyceanMitochondrial": {
+                "TTT": "F", "TTC": "F", "TTA": "L", "TTG": "L", "CTT": "L", "CTC": "L", "CTA": "L", "CTG": "L",
+                "ATT": "I", "ATC": "I", "ATA": "I", "ATG": "M", "GTT": "V", "GTC": "V", "GTA": "V", "GTG": "V",
+                "TCT": "S", "TCC": "S", "TCA": "S", "TCG": "S", "CCT": "P", "CCC": "P", "CCA": "P", "CCG": "P",
+                "ACT": "T", "ACC": "T", "ACA": "T", "ACG": "T", "GCT": "A", "GCC": "A", "GCA": "A", "GCG": "A",
+                "TAT": "Y", "TAC": "Y", "TAA": "*", "TAG": "L", "CAT": "H", "CAC": "H", "CAA": "Q", "CAG": "Q",
+                "AAT": "N", "AAC": "N", "AAA": "K", "AAG": "K", "GAT": "D", "GAC": "D", "GAA": "E", "GAG": "E",
+                "TGT": "C", "TGC": "C", "TGA": "W", "TGG": "W", "CGT": "R", "CGC": "R", "CGA": "R", "CGG": "R",
+                "AGT": "S", "AGC": "S", "AGA": "R", "AGG": "R", "GGT": "G", "GGC": "G", "GGA": "G", "GGG": "G"
+              },
+              "candidateDivisionSR1Gracilibacteria": {
+                "TTT": "F", "TTC": "F", "TTA": "L", "TTG": "L", "CTT": "L", "CTC": "L", "CTA": "L", "CTG": "L",
+                "ATT": "I", "ATC": "I", "ATA": "I", "ATG": "M", "GTT": "V", "GTC": "V", "GTA": "V", "GTG": "V",
+                "TCT": "S", "TCC": "S", "TCA": "S", "TCG": "S", "CCT": "P", "CCC": "P", "CCA": "P", "CCG": "P",
+                "ACT": "T", "ACC": "T", "ACA": "T", "ACG": "T", "GCT": "A", "GCC": "A", "GCA": "A", "GCG": "A",
+                "TAT": "Y", "TAC": "Y", "TAA": "*", "TAG": "*", "CAT": "H", "CAC": "H", "CAA": "Q", "CAG": "Q",
+                "AAT": "N", "AAC": "N", "AAA": "K", "AAG": "K", "GAT": "D", "GAC": "D", "GAA": "E", "GAG": "E",
+                "TGT": "C", "TGC": "C", "TGA": "W", "TGG": "W", "CGT": "R", "CGC": "R", "CGA": "R", "CGG": "R",
+                "AGT": "S", "AGC": "S", "AGA": "R", "AGG": "R", "GGT": "G", "GGC": "G", "GGA": "G", "GGG": "G"
+              }
+              
+            };
+
+            function removeSpaces() {
+              const textArea = document.getElementById("dna-sequence");
+              textArea.value = textArea.value.replace(/\s+/g, '');
+            }
+        
+            function clearInput() {
+              document.getElementById("dna-sequence").value = ''; 
+            }
+        
+            function resetGraph() {
+              if (window.aminoAcidChart) {
+                window.aminoAcidChart.destroy();  
+              }
+            }
+            
+            
+;
+
+              const aminoAcidDetails = {
+                A: { name: "Alanine", 
+                    symbol: "Ala", 
+                    image: "https://upload.wikimedia.org/wikipedia/commons/9/90/L-Alanin_-_L-Alanine.svg", 
+                    image2: "https://upload.wikimedia.org/wikipedia/commons/3/39/Alanine-from-xtal-3D-bs-17.png",
+                    credits: "By NEUROtiker - Own work, Public Domain, https://commons.wikimedia.org/w/index.php?curid=1637087",
+                    credits2: "By Ben Mills - Own work, Public Domain, https://commons.wikimedia.org/w/index.php?curid=98248726",
+                    description: "Alanine (symbol Ala or A),[4] or α-alanine, is an α-amino acid that is used in the biosynthesis of proteins. It contains an amine group and a carboxylic acid group, both attached to the central carbon atom which also carries a methyl group side chain (https://en.wikipedia.org/wiki/Alanine)" 
+                  },
+                R: { 
+                    name: "Arginine", 
+                    symbol: "Arg", 
+                    image: "https://upload.wikimedia.org/wikipedia/commons/f/f4/Arginin_-_Arginine.svg", 
+                    image2:"https://upload.wikimedia.org/wikipedia/commons/7/79/Arginine-from-xtal-3D-bs-17.png",
+                    credits: "By NEUROtiker - Own work, Public Domain, https://commons.wikimedia.org/w/index.php?curid=1636630",
+                    credits2:"By Ben Mills - Own work, Public Domain, https://commons.wikimedia.org/w/index.php?curid=98250035" ,
+                    description: "Arginine is the amino acid with the formula (H2N)(HN)CN(H)(CH2)3CH(NH2)CO2H. The molecule features a guanidino group appended to a standard amino acid framework. At physiological pH, the carboxylic acid is deprotonated (−CO2−) and both the amino and guanidino groups are protonated, resulting in a cation. " },
+
+                N: { 
+                    name: "Asparagine", 
+                    symbol: "Asn", 
+                    image: "https://upload.wikimedia.org/wikipedia/commons/0/0c/L-Asparagin_-_L-Asparagine.svg", 
+                    image2: "https://upload.wikimedia.org/wikipedia/commons/a/a4/Asparagine-from-xtal-3D-bs-17.png", 
+                    credits:"By NEUROtiker - Own work, Public Domain, https://commons.wikimedia.org/w/index.php?curid=1637089",
+                    credits2:"By Ben Mills - Own work, Public Domain, https://commons.wikimedia.org/w/index.php?curid=98314887",
+                    description: "Asparagine (symbol Asn or N) is an α-amino acid that is used in the biosynthesis of proteins. It contains an α-amino group (which is in the protonated -NH₃⁺ form under biological conditions), an α-carboxylic acid group (which is in the deprotonated -COO⁻ form under biological conditions), and a side chain carboxamide, classifying it as a polar (at physiological pH), aliphatic amino acid. It is non-essential in humans, meaning the body can synthesize it. It is encoded by the codons AAU and AAC" },
+
+                D: { 
+                    name: "Aspartic Acid", 
+                    symbol: "Asp", 
+                    image: "https://upload.wikimedia.org/wikipedia/commons/c/ce/L-Asparagins%C3%A4ure_-_L-Aspartic_acid.svg", 
+                    image2: "https://upload.wikimedia.org/wikipedia/commons/1/1b/Aspartic-acid-from-xtal-view-2-3D-bs-17.png", 
+                    credits:"By NEUROtiker - Own work, Public Domain, https://commons.wikimedia.org/w/index.php?curid=1637090",
+                    credits2:"By Ben Mills - Own work, Public Domain, https://commons.wikimedia.org/w/index.php?curid=98321394",
+                    description: "Aspartic acid (symbol Asp or D; the ionic form is known as aspartate) is an α-amino acid that is used in the biosynthesis of proteins. The L-isomer of aspartic acid is one of the 22 proteinogenic amino acids, i.e., the building blocks of proteins. D-aspartic acid is one of two D-amino acids commonly found in mammals. Apart from a few rare exceptions, D-aspartic acid is not used for protein synthesis but is incorporated into some peptides and plays a role as a neurotransmitter/neuromodulator." },
+
+                C: { 
+                    name: "Cysteine", 
+                    symbol: "Cys", 
+                    image: "https://upload.wikimedia.org/wikipedia/commons/1/1a/L-Cystein_-_L-Cysteine.svg", 
+                    image2: "https://upload.wikimedia.org/wikipedia/commons/4/4e/Cysteine-from-xtal-3D-bs-17.png", 
+                    credits:"By NEUROtiker - Own work, Public Domain, https://commons.wikimedia.org/w/index.php?curid=1637091",
+                    credits2:"By Ben Mills - Own work, Public Domain, https://commons.wikimedia.org/w/index.php?curid=98248798",
+                    description: "Cysteine (symbol Cys or C) is a semiessential proteinogenic amino acid with the formula HOOC−CH(−NH₂)−CH₂−SH. The thiol side chain in cysteine often participates in enzymatic reactions as a nucleophile. Cysteine is chiral, but both D- and L-cysteine are found in nature. L‑Cysteine is a protein monomer in all biota, and D-cysteine acts as a signaling molecule in mammalian nervous systems. Cysteine is named after its discovery in urine, which comes from the urinary bladder or cyst, from Greek κύστη (kýsti), meaning bladder." },
+
+                E: { 
+                    name: "Glutamic Acid", 
+                    symbol: "Glu", 
+                    image: "https://upload.wikimedia.org/wikipedia/commons/d/db/L-Glutamins%C3%A4ure_-_L-Glutamic_acid.svg",
+                    image2: "https://upload.wikimedia.org/wikipedia/commons/2/2d/Glutamic-acid-from-xtal-view-2-3D-bs-17.png",
+                    credits:"By NEUROtiker - Own work, Public Domain, https://commons.wikimedia.org/w/index.php?curid=1637093",
+                    credits2:"By Ben Mills - Own work, Public Domain, https://commons.wikimedia.org/w/index.php?curid=98322239",
+                    description: "Glutamic acid (symbol Glu or E; the anionic form is known as glutamate) is an α-amino acid that is used by almost all living beings in the biosynthesis of proteins. It is a non-essential nutrient for humans, meaning that the human body can synthesize enough for its use. It is also the most abundant excitatory neurotransmitter in the vertebrate nervous system. It serves as the precursor for the synthesis of the inhibitory gamma-aminobutyric acid (GABA) in GABAergic neurons." },
+
+                Q: { 
+                    name: "Glutamine", 
+                    symbol: "Gln", 
+                    image: "https://upload.wikimedia.org/wikipedia/commons/5/5d/L-Glutamin_-_L-Glutamine.svg", 
+                    image2: "https://upload.wikimedia.org/wikipedia/commons/3/3f/Glutamine-from-xtal-3D-bs-17.png", 
+                    credits:"By NEUROtiker - Own work, Public Domain, https://commons.wikimedia.org/w/index.php?curid=1637092",
+                    credits2:"By Ben Mills - Own work, Public Domain, https://commons.wikimedia.org/w/index.php?curid=98327903",
+                    description: "Glutamine (symbol Gln or Q) is an α-amino acid that is used in the biosynthesis of proteins. Its side chain is similar to that of glutamic acid, except the carboxylic acid group is replaced by an amide. It is classified as a charge-neutral, polar amino acid. It is non-essential and conditionally essential in humans, meaning the body can usually synthesize sufficient amounts of it, but in some instances of stress, the body's demand for glutamine increases, and glutamine must be obtained from the diet. It is encoded by the codons CAA and CAG. It is named after glutamic acid, which in turn is named after its discovery in cereal proteins, gluten." 
+                  },
+
+                G: { 
+                    name: "Glycine", 
+                    symbol: "Gly", 
+                    image: "https://upload.wikimedia.org/wikipedia/commons/1/18/Glycine-2D-skeletal.svg", 
+                    image2: "https://upload.wikimedia.org/wikipedia/commons/0/01/Glycine-neutral-Ipttt-conformer-3D-bs-17.png", 
+                    credits:"By Vectorization: Alhadis - Own work based on: Glycine-2D-skeletal.png by Ben Mills, Public Domain, https://commons.wikimedia.org/w/index.php?curid=140657896",
+                    credits2:"By Ben Mills - Own work, Public Domain, https://commons.wikimedia.org/w/index.php?curid=98162935",
+                    description: "Glycine (symbol Gly or G) is an amino acid that has a single hydrogen atom as its side chain. It is the simplest stable amino acid (carbamic acid is unstable). Glycine is one of the proteinogenic amino acids. It is encoded by all the codons starting with GG (GGU, GGC, GGA, GGG). Glycine is integral to the formation of alpha-helices in secondary protein structure due to theflexibility caused by such a small R group. Glycine is also an inhibitory neurotransmitter – interference with its release within the spinal cord (such as during a Clostridium tetani infection) can cause spastic paralysis due to uninhibited muscle contraction." 
+                  },
+
+                H: { 
+                    name: "Histidine", 
+                    symbol: "His", 
+                    image: "https://upload.wikimedia.org/wikipedia/commons/a/ac/Amino_Acid_Histidine.png", 
+                    image2: "https://upload.wikimedia.org/wikipedia/commons/e/e7/Histidine-from-xtal-3D-bs-17.png", 
+                    credits:"By Subemeraladio - Own work, CC0, https://commons.wikimedia.org/w/index.php?curid=153842896",
+                    credits2:"By Ben Mills - Own work, Public Domain, https://commons.wikimedia.org/w/index.php?curid=98248513",
+                    description: "Histidine (symbol His or H) is an essential amino acid that is used in the biosynthesis of proteins. It contains an α-amino group (which is in the protonated –NH₃⁺ form under biological conditions), a carboxylic acid group (which is in the deprotonated –COO⁻ form under biological conditions), and an imidazole side chain (which is partially protonated), classifying it as a positively charged amino acid at physiological pH. Initially thought to be essential only for infants, it has now been shown in longer-term studies to be essential for adults as well. It is encoded by the codons CAU and CAC." 
+                   },
+
+                I: { 
+                    name: "Isoleucine", 
+                    symbol: "Ile", 
+                    image: "https://upload.wikimedia.org/wikipedia/commons/4/46/L-Isoleucin_-_L-Isoleucine.svg", 
+                    image2: "https://upload.wikimedia.org/wikipedia/commons/e/e2/Isoleucine-from-xtal-3D-bs-17.png", 
+                    credits:"By NEUROtiker - Own work, Public Domain, https://commons.wikimedia.org/w/index.php?curid=1637095",
+                    credits2:"By Ben Mills - Own work, Public Domain, https://commons.wikimedia.org/w/index.php?curid=98256856",
+                    description: "Isoleucine (symbol Ile or I) is an α-amino acid that is used in the biosynthesis of proteins. It contains an α-amino group (which is in the protonated −NH₃⁺ form under biological conditions), an α-carboxylic acid group (which is in the deprotonated −COO⁻ form under biological conditions), and a hydrocarbon side chain with a branch (a central carbon atom bound to three other carbon atoms). It is classified as a non-polar, uncharged (at physiological pH), branched-chain, aliphatic amino acid. It is essential in humans, meaning the body cannot synthesize it. Essential amino acids are necessary in the human diet. In plants, isoleucine can be synthesized from threonine and methionine. In plants and bacteria, isoleucine is synthesized from pyruvate employing leucine biosynthesis enzymes. It is encoded by the codons AUU, AUC, and AUA." 
+                  },
+
+                L: { 
+                    name: "Leucine", 
+                    symbol: "Leu", 
+                    image: "https://upload.wikimedia.org/wikipedia/commons/4/4d/L-Leucine.svg",
+                    image2: "https://upload.wikimedia.org/wikipedia/commons/a/a5/Leucine-from-xtal-3D-bs-17.png",
+                    credits:"By Harbin - Own work, Public Domain, https://commons.wikimedia.org/w/index.php?curid=5377540",
+                    credits2:"By Ben Mills - Own work, Public Domain, https://commons.wikimedia.org/w/index.php?curid=98014143", 
+                    description: "Leucine (symbol Leu or L) is an essential amino acid that is used in the biosynthesis of proteins. Leucine is an α-amino acid, meaning it contains an α-amino group (which is in the protonated −NH₃⁺ form under biological conditions), an α-carboxylic acid group (which is in the deprotonated −COO⁻ form under biological conditions), and a side chain isobutyl group, making it a non-polar aliphatic amino acid. It is essential in humans, meaning the body cannot synthesize it and it must be obtained from the diet. Human dietary sources include foods that contain protein, such as meats, dairy products, soy products, beans, and other legumes. It is encoded by the codons UUA, UUG, CUU, CUC, CUA, and CUG. Leucine is named after the Greek word for white (λευκός, leukós), referencing its common appearance as a white powder, a property it shares with many other amino acids." 
+                  },
+
+                K: { 
+                    name: "Lysine", 
+                    symbol: "Lys", 
+                    image: "https://upload.wikimedia.org/wikipedia/commons/8/88/L-Lysin_-_L-Lysine.svg", 
+                    image2: "https://upload.wikimedia.org/wikipedia/commons/6/66/Lysine-from-xtal-3D-bs-17.png",
+                    credits:"By NEUROtiker - Own work, Public Domain, https://commons.wikimedia.org/w/index.php?curid=1637097",
+                    credits2:"By Ben Mills - Own work, Public Domain, https://commons.wikimedia.org/w/index.php?curid=98020207", 
+                    description: "Lysine (symbol Lys or K) is an α-amino acid that is a precursor to many proteins. Lysine contains an α-amino group (which is in the protonated −NH₃⁺ form at physiological pH), an α-carboxylic acid group (which is in the deprotonated −COO⁻ form at physiological pH), and a side chain (CH₂)₄NH₂ (which is partially protonated at physiological pH). It is classified as a basic, charged, aliphatic amino acid. It is encoded by the codons AAA and AAG. Like almost all other amino acids, the α-carbon is chiral, and lysine may refer to either enantiomer or a racemic mixture of both. In this context, lysine refers to the biologically active enantiomer L-lysine, where the α-carbon is in the S configuration." 
+                  },
+
+                M: { 
+                    name: "Methionine", 
+                    symbol: "Met", 
+                    image: "https://upload.wikimedia.org/wikipedia/commons/2/23/Methionin_-_Methionine.svg", 
+                    image2: "https://upload.wikimedia.org/wikipedia/commons/2/28/Methionine-from-xtal-3D-bs-17.png", 
+                    credits:"By NEUROtiker - Own work, Public Domain, https://commons.wikimedia.org/w/index.php?curid=1636642",
+                    credits2:"By Ben Mills - Own work, Public Domain, https://commons.wikimedia.org/w/index.php?curid=98248870", 
+                    description: "Methionine (symbol Met or M) is an essential amino acid in humans. As the precursor of other non-essential amino acids such as cysteine and taurine, as well as versatile compounds like SAM-e and the important antioxidant glutathione, methionine plays a critical role in the metabolism and health of many species, including humans. Methionine is also involved in angiogenesis and various processes related to DNA transcription, epigenetic expression, and gene regulation." 
+                  },
+
+                F: { 
+                    name: "Phenylalanine", 
+                    symbol: "Phe", 
+                    image: "https://upload.wikimedia.org/wikipedia/commons/7/7a/L-Phenylalanin_-_L-Phenylalanine.svg", 
+                    image2: "https://upload.wikimedia.org/wikipedia/commons/1/1c/Phenylalanine-from-xtal-3D-bs-17.png", 
+                    credits:"By NEUROtiker - Own work, Public Domain, https://commons.wikimedia.org/w/index.php?curid=1637099",
+                    credits2:"By Ben Mills - Own work, Public Domain, https://commons.wikimedia.org/w/index.php?curid=97318510", 
+                    description: "Phenylalanine (symbol: Phe or F) is an essential α-amino acid with the chemical formula C₉H₁₁NO₂. It can be viewed as a benzyl group substituted for the methyl group of alanine, or a phenyl group in place of a terminal hydrogen of alanine. Classified as neutral and nonpolar, phenylalanine's hydrophobic benzyl side chain makes it inert. The L-isomer of phenylalanine is used to form proteins, as coded by DNA. It is a precursor to tyrosine, the neurotransmitters dopamine, norepinephrine (noradrenaline), and epinephrine (adrenaline), as well as the biological pigment melanin. Phenylalanine is encoded by the messenger RNA codons UUU and UUC." 
+                  },
+
+                P: { 
+                    name: "Proline", 
+                    symbol: "Pro", 
+                    image: "https://upload.wikimedia.org/wikipedia/commons/f/ff/Prolin_-_Proline.svg", 
+                    image2: "https://upload.wikimedia.org/wikipedia/commons/d/da/Proline-from-xtal-3D-bs-17-view-B.png",
+                    credits:"By NEUROtiker - Own work, Public Domain, https://commons.wikimedia.org/w/index.php?curid=1636645",
+                    credits2:"By Ben Mills - Own work, Public Domain, https://commons.wikimedia.org/w/index.php?curid=98249140", 
+                    description: "Proline (symbol: Pro or P) is an organic acid classified as a proteinogenic amino acid, meaning it is used in protein biosynthesis. Unlike other amino acids, proline contains a secondary amine instead of the typical amino group (-NH₂). Under biological conditions, the nitrogen of the secondary amine is protonated (NH₂⁺), while the carboxyl group is deprotonated (−COO⁻). The side chain of proline connects to the α carbon and forms a pyrrolidine ring, classifying it as an aliphatic amino acid. Proline is non-essential in humans because it can be synthesized from the non-essential amino acid L-glutamate. It is encoded by the codons starting with CC (CCU, CCC, CCA, and CCG)" 
+                  },
+
+                S: { 
+                    name: "Serine", 
+                    symbol: "Ser", 
+                    image: "https://upload.wikimedia.org/wikipedia/commons/b/b9/L-Serin_-_L-Serine.svg", 
+                    image2: "https://upload.wikimedia.org/wikipedia/commons/f/fe/Serine-from-xtal-view-1-3D-bs-17.png", 
+                    credits:"By NEUROtiker - Own work, Public Domain, https://commons.wikimedia.org/w/index.php?curid=1637101",
+                    credits2:"By Ben Mills - Own work, Public Domain, https://commons.wikimedia.org/w/index.php?curid=98329119", 
+                    description: "Serine (symbol: Ser or S) is an α-amino acid used in protein biosynthesis. It contains an α-amino group (which is protonated as −NH₃⁺ under biological conditions), a carboxyl group (which is deprotonated as −COO⁻), and a side chain consisting of a hydroxymethyl group, classifying it as a polar amino acid. Serine can be synthesized in the human body under normal physiological conditions, making it a non-essential amino acid. It is encoded by the codons UCU, UCC, UCA, UCG, AGU, and AGC." },
+
+                T: { 
+                    name: "Threonine", 
+                    symbol: "Thr", 
+                    image: "https://upload.wikimedia.org/wikipedia/commons/a/a0/L-Threonin_-_L-Threonine.svg", 
+                    image2: "https://upload.wikimedia.org/wikipedia/commons/a/a3/Threonine-from-xtal-3D-bs-17.png", 
+                    credits:"By NEUROtiker - Own work, Public Domain, https://commons.wikimedia.org/w/index.php?curid=1637102",
+                    credits2:"By Ben Mills - Own work, Public Domain, https://commons.wikimedia.org/w/index.php?curid=98329959", 
+                    description: "Threonine (symbol: Thr or T) is an amino acid used in protein biosynthesis. It contains an α-amino group (protonated as −NH₃⁺ when dissolved in water), a carboxyl group (deprotonated as −COO⁻ in water), and a side chain with a hydroxyl group, making it a polar, uncharged amino acid. Threonine is essential in humans, meaning it cannot be synthesized by the body and must be obtained from the diet. In bacteria such as E. coli, threonine is synthesized from aspartate. It is encoded by the codons starting with AC (ACU, ACC, ACA, and ACG)." },
+
+                W: { 
+                    name: "Tryptophan", 
+                    symbol: "Trp", 
+                    image: "https://upload.wikimedia.org/wikipedia/commons/c/c1/L-Tryptophan_-_L-Tryptophan.svg", 
+                    image2: "https://upload.wikimedia.org/wikipedia/commons/c/c9/Tryptophan-from-xtal-3D-bs-17.png", 
+                    credits:"By NEUROtiker - Own work, Public Domain, https://commons.wikimedia.org/w/index.php?curid=1637103",
+                    credits2:"By Ben Mills - Own work, Public Domain, https://commons.wikimedia.org/w/index.php?curid=98021106", 
+                    description: "Tryptophan (symbol: Trp or W) is an α-amino acid used in protein biosynthesis. It contains an α-amino group, an α-carboxylic acid group, and an indole side chain, making it a polar molecule with a non-polar aromatic β-carbon substituent. Tryptophan is also a precursor to the neurotransmitter serotonin, the hormone melatonin, and vitamin B3 (niacin). It is encoded by the codon UGG" },
+
+                Y: { 
+                    name: "Tyrosine", 
+                    symbol: "Tyr", 
+                    image: "https://upload.wikimedia.org/wikipedia/commons/4/40/L-Tyrosin_-_L-Tyrosine.svg", 
+                    image2: "https://upload.wikimedia.org/wikipedia/commons/4/4a/Tyrosine-from-xtal-3D-bs-17.png", 
+                    credits:"By NEUROtiker - Own work, Public Domain, https://commons.wikimedia.org/w/index.php?curid=1637104",
+                    credits2:"By Ben Mills - Own work, Public Domain, https://commons.wikimedia.org/w/index.php?curid=98135627", 
+                    description: "L-Tyrosine (symbol: Tyr or Y), also known as 4-hydroxyphenylalanine, is one of the 20 standard amino acids used by cells to synthesize proteins. It is a conditionally essential amino acid with a polar side group. The name tyrosine comes from the Greek word tyrós, meaning cheese, as it was first discovered in 1846 by German chemist Justus von Liebig in the protein casein from cheese. When referred to as a functional group or side chain, it is called tyrosyl. While tyrosine is generally classified as a hydrophobic amino acid, it is more hydrophilic than phenylalanine. It is encoded by the codons UAC and UAU in messenger RNA.." },
+
+                V: { 
+                    name: "Valine", 
+                    symbol: "Val", 
+                    image: "https://upload.wikimedia.org/wikipedia/commons/3/3d/L-valine-2D-skeletal.png", 
+                    image2: "https://upload.wikimedia.org/wikipedia/commons/8/8f/Valine-from-xtal-3D-bs-17.png", 
+                    credits:"By Benjah-bmm27 - Own work, Public Domain, https://commons.wikimedia.org/w/index.php?curid=2049914",
+                    credits2:"By Ben Mills - Own work, Public Domain, https://commons.wikimedia.org/w/index.php?curid=98314693", 
+                    description: "Valine (symbol: Val or V) is an α-amino acid used in protein biosynthesis. It contains an α-amino group (protonated as −NH₃⁺ under biological conditions), an α-carboxylic acid group (deprotonated as −COO⁻), and an isopropyl side chain, making it a non-polar, aliphatic amino acid. Valine is essential in humans, meaning the body cannot synthesize it and must obtain it from dietary sources such as meats, dairy products, soy products, beans, and legumes. It is encoded by the codons starting with GU (GUU, GUC, GUA, and GUG)." }
+              };
+
+              function displayAminoAcidChart() {
+                const geneticCodeSelect = document.getElementById("genetic-code-selection");
+                const selectedGeneticCode = geneticCodeSelect.value;
+
+                let dnaSequence = document.getElementById("dna-sequence").value.replace(/\s+/g, '').toUpperCase();
+
+                if (dnaSequence.length % 3 !== 0) {
+                  const remainder = dnaSequence.length % 3;
+                  const truncatedLength = Math.floor(dnaSequence.length / 3) * 3;
+
+                  alert(`Sequence length is not a multiple of 3. ${remainder} base(s) will be truncated. Translated sequence will be ${truncatedLength} bases long.`);
+                  dnaSequence = dnaSequence.substring(0, truncatedLength);
+                }
+
+                if (!selectedGeneticCode) {
+                  alert("Please select a genetic code type first!");
+                  return;
+                }
+
+                const codonTable = codonTables[selectedGeneticCode];
+                if (!codonTable) {
+                  alert("Selected genetic code is not supported!");
+                  return;
+                }
+
+                const validDNARegex = /^[ATCG]+$/;
+                if (!validDNARegex.test(dnaSequence)) {
+                  alert('Invalid DNA sequence. Please use only A, T, C, G letters.');
+                  return;
+                }
+
+                if (dnaSequence.length < 3) {
+                  alert('DNA sequence is too short to translate.');
+                  return;
+                }
+
+                // Calculate Amino Acid Counts
+                const aminoAcidCount = {};
+                for (let i = 0; i <= dnaSequence.length - 3; i += 3) {
+                  const codon = dnaSequence.substring(i, i + 3);
+                  const aminoAcid = codonTable[codon];
+
+                  if (aminoAcid && aminoAcid !== "*" && aminoAcid !== "Stop") {
+                    aminoAcidCount[aminoAcid] = (aminoAcidCount[aminoAcid] || 0) + 1;
+                  }
+                }
+
+                const aminoAcids = Object.keys(aminoAcidCount);
+                const counts = Object.values(aminoAcidCount);
+                const totalAminoAcids = counts.reduce((a, b) => a + b, 0);
+                const totalTypesOfAminoAcids = aminoAcids.length;
+
+                if (window.aminoAcidChart && typeof window.aminoAcidChart.destroy === 'function') {
+                  window.aminoAcidChart.destroy();
+                }
+
+                // Generate Unique Colors for Each Amino Acid
+                const colors = aminoAcids.map((_, index) => `hsl(${(index * 360) / aminoAcids.length}, 70%, 60%)`);
+
+                // Create Chart
+                const ctx = document.getElementById('aminoAcidChart').getContext('2d');
+                window.aminoAcidChart = new Chart(ctx, {
+                  type: 'bar',
+                  data: {
+                    labels: aminoAcids,
+                    datasets: [{
+                      label: 'Amino Acid Count',
+                      data: counts,
+                      backgroundColor: colors, // Dynamic colors
+                      borderColor: colors.map(color => color.replace('60%', '50%')), // Darker border colors
+                      borderWidth: 1
+                    }]
+                  },
+                  options: {
+                    responsive: true,
+                    scales: {
+                      y: {
+                        beginAtZero: true
+                      }
+                    }, 
+                    onClick: (event, elements) => {
+                      if (elements.length > 0) {
+                        const index = elements[0].index;
+                        const aminoAcid = aminoAcidChart.data.labels[index];
+                        showAminoAcidModal(aminoAcid);
+                      }
+                    }
+                  }
+                });
+
+                const chartCaption = document.getElementById('chart-caption');
+                chartCaption.innerHTML = `Total Amino Acids: ${totalAminoAcids}, Total Types of Amino Acids: ${totalTypesOfAminoAcids}`;
+              }
+
+              function showAminoAcidModal(aminoAcid) {
+                const details = aminoAcidDetails[aminoAcid];
+                if (details) {
+                  document.getElementById('aminoAcidName').textContent = `${details.name} (${details.symbol})`;
+                  document.getElementById('aminoAcidImage').src = details.image;
+                  document.getElementById('aminoAcidImgCred').textContent = details.credits;
+                  document.getElementById('aminoAcidImage2').src = details.image2;
+                  document.getElementById('aminoAcidImgCred2').textContent = details.credits2;
+                  document.getElementById('aminoAcidDescription').textContent = details.description;
+                  const modal = new bootstrap.Modal(document.getElementById('aminoAcidModal'));
+                  modal.show();
+                }
+              }
+
+
+          function downloadChart(format) {
+            const canvas = document.getElementById('aminoAcidChart');
+            if (!canvas) {
+              alert('No chart available for download!');
+              return;
+            }
+
+            const link = document.createElement('a');
+            if (format === 'svg') {
+              alert('SVG export requires additional implementation. Currently not supported.');
+              return;
+            }
+
+            const dataURL = canvas.toDataURL(`image/${format}`);
+            link.href = dataURL;
+            link.download = `Amino_Acid_Chart.${format}`;
+            link.click();
+          }
+         </script>
+                    
+      </div>
+
+{% endblock %}

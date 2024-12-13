@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <div class="container mt-5">
+   
+        <div class="pdf-container" style="height: 80vh;">
+            <!-- Embeds the PDF file dynamically -->
+            <embed src="{{ pdf_file }}" type="application/pdf" width="100%" height="100%">
+        </div>
+        <!-- Link to open the PDF viewer page for "ebook1.pdf" -->
+        <a href="{{ url_for('view_pdf', filename='ebook1.pdf') }}">View Example PDF</a>
+    </div>
+
+{% endblock %}
