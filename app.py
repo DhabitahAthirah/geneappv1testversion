@@ -22,7 +22,6 @@ from pyzbar.pyzbar import decode
 from urllib.parse import quote
 from urllib.parse import quote_plus
 from flask_cors import CORS
-import pandas as pd  
 from io import BytesIO
 from Bio.Restriction import RestrictionBatch, Analysis, AllEnzymes
 from Bio.Seq import Seq
@@ -489,40 +488,6 @@ def submit_barcode():
             return jsonify({"success": False, "error": "No matching result found."})
     except ValueError as e:
         return jsonify({"success": False, "error": str(e)})
-
-@app.route('/download/excel', methods=['GET'])
-def download_excel():
- 
-    df = pd.DataFrame(results)
-
-    output = BytesIO()
-    with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
-        df.to_excel(writer, index=False, sheet_name='Search Results')
-    output.seek(0)
-
-    return send_file(
-        output,
-        as_attachment=True,
-        download_name="Search_Results.xlsx",
-        mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-    )
-
-@app.route('/download/csv', methods=['GET'])
-def download_csv():
-
-    df = pd.DataFrame(results)
-    
-   
-    output = BytesIO()
-    df.to_csv(output, index=False)
-    output.seek(0)
-
-    return send_file(
-        output,
-        as_attachment=True,
-        download_name="Search_Results.csv",
-        mimetype='text/csv'
-    )
 
 if __name__ == "__main__":
     if not os.path.exists(UPLOAD_FOLDER):
