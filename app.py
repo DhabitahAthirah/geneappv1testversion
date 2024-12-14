@@ -8,7 +8,6 @@ import xml.etree.ElementTree as ET
 from io import StringIO
 from unittest.mock import patch
 import subprocess
-from flask_sqlalchemy import SQLAlchemy
 import os
 from datetime import datetime
 from collections import Counter
