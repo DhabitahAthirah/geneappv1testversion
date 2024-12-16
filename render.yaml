@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: your-python-app
+    name: gene-app
     env: python
     buildCommand: pip install -r requirements.txt
     startCommand: python app.py
