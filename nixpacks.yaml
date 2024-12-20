@@ -1,6 +1,5 @@
 setup:
   - python3
-  - postgresql
   - gcc
 
 install:
