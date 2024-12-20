@@ -3,7 +3,6 @@ import requests
 from bs4 import BeautifulSoup
 import xmltodict
 from Bio import SeqIO 
-import pytest
 import xml.etree.ElementTree as ET
 from io import StringIO
 from unittest.mock import patch
