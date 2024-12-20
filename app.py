@@ -18,7 +18,6 @@ import base64
 import re
 from xml.etree import ElementTree as ET
 from PIL import Image
-from pyzbar.pyzbar import decode
 from urllib.parse import quote
 from urllib.parse import quote_plus
 from flask_cors import CORS
