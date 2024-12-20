@@ -1,0 +1,9 @@
+{
+  "setup": [
+    "python3"
+  ],
+  "install": [
+    "pip install -r requirements.txt"
+  ],
+  "start": "gunicorn app:app"
+}
