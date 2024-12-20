@@ -28,6 +28,9 @@ from Bio.Seq import Seq
 app = Flask(__name__)
 CORS(app)
 
+# Get the port from environment variable, default to 5000 if not set
+port = int(os.getenv("PORT", 5000))
+
 BOLD_API_URL = "http://v3.boldsystems.org/index.php/Ids_xml"
 
 blast_endpoint = "https://blast.ncbi.nlm.nih.gov/Blast.cgi"
