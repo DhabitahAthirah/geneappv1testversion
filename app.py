@@ -491,4 +491,6 @@ def submit_barcode():
 if __name__ == "__main__":
     if not os.path.exists(UPLOAD_FOLDER):
         os.makedirs(UPLOAD_FOLDER)
-    app.run(debug=True)
+    
+    # Run the app on the specified port, make sure it listens on all IP addresses (0.0.0.0)
+    app.run(host="0.0.0.0", port=port, debug=True)
