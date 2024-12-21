@@ -75,6 +75,7 @@ def index():
 
 template_routes = {
     "login": "login.html",
+    "register":"register.html",
     'genedna': 'database/genedna.html',
     'proteindata': 'database/protein.html',
     'submission': 'submission.html',
