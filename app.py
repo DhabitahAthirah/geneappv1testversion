@@ -89,6 +89,8 @@ template_routes = {
     'journal': 'publications/journal.html',
     'books': 'publications/books.html',
     'book1': 'publications/book1.html',
+    'videos':'publications/videos.html',
+    'posters':'publications/posters.html',
     'articles': 'publications/articles.html',
      "identifyspecies": "analysis/identifyspecies.html",
     "speciessearch": "analysis/blast.html",
