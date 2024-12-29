@@ -24,7 +24,7 @@ from io import BytesIO
 from Bio.Restriction import RestrictionBatch, Analysis, AllEnzymes
 from Bio.Seq import Seq
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder="static")
 CORS(app)
 
 # Get the port from environment variable, default to 5000 if not set
