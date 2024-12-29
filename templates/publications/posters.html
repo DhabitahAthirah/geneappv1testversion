@@ -58,25 +58,117 @@
   </div>
 
 <div class="container">
-  <div>
-    <!-- PDF Card 1 -->
+  <div class="row row-cols-1 row-cols-md-3 g-4">
+    <!-- Poster Card 1 -->
     <div class="col">
-      <div class="card">
+      <div class="card h-100">
         <div class="card-body">
-          <h5 class="card-title">Project Poster</h5>
-          <div class="ratio ratio-16x9 mb-3">
-            <iframe 
-              src="static/pdfs/posterproject.pdf"
-              type="application/pdf"
-              title="Project PDF"
-              width="100%"
-              height="600px"></iframe>
-          </div>
+          <h5 class="card-title">Project Poster 1</h5>
+          <img src="static/images/poster1.png" class="img-fluid mb-3" alt="Project Poster 1"/>
+          <button type="button" class="btn btn-primary btn-sm" data-mdb-toggle="modal" data-mdb-target="#posterModal1">
+            View
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Poster Card 2 -->
+    <div class="col">
+      <div class="card h-100">
+        <div class="card-body">
+          <h5 class="card-title">Project Poster 2</h5>
+          <img src="static/images/poster2.png" class="img-fluid mb-3" alt="Project Poster 2"/>
+          <button type="button" class="btn btn-primary btn-sm" data-mdb-toggle="modal" data-mdb-target="#posterModal2">
+            View
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Poster Card 3 -->
+    <div class="col">
+      <div class="card h-100">
+        <div class="card-body">
+          <h5 class="card-title">Project Poster 3</h5>
+          <img src="static/images/poster3.png" class="img-fluid mb-3" alt="Project Poster 3"/>
+          <button type="button" class="btn btn-primary btn-sm" data-mdb-toggle="modal" data-mdb-target="#posterModal3">
+            View
+          </button>
         </div>
       </div>
     </div>
   </div>
 </div>
+
+<!-- Modal 1 -->
+<div class="modal fade" id="posterModal1" tabindex="-1" aria-labelledby="posterModal1Label" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="posterModal1Label">Project Poster 1</h5>
+        <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <img src="static/images/poster1.png" class="img-fluid" alt="Project Poster 1"/>
+      </div>
+      <div class="modal-footer">
+        <a href="static/images/poster1.png" class="btn btn-secondary btn-sm" download>
+          Download
+        </a>
+        <a href="static/images/poster1.png" class="btn btn-primary btn-sm" target="_blank">
+          Open in New Tab
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal 2 -->
+<div class="modal fade" id="posterModal2" tabindex="-1" aria-labelledby="posterModal2Label" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="posterModal2Label">Project Poster 2</h5>
+        <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <img src="static/images/poster2.png" class="img-fluid" alt="Project Poster 2"/>
+      </div>
+      <div class="modal-footer">
+        <a href="static/images/poster2.png" class="btn btn-secondary btn-sm" download>
+          Download
+        </a>
+        <a href="static/images/poster2.png" class="btn btn-primary btn-sm" target="_blank">
+          Open in New Tab
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal 3 -->
+<div class="modal fade" id="posterModal3" tabindex="-1" aria-labelledby="posterModal3Label" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="posterModal3Label">Project Poster 3</h5>
+        <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <img src="static/images/poster3.png" class="img-fluid" alt="Project Poster 3"/>
+      </div>
+      <div class="modal-footer">
+        <a href="static/images/poster3.png" class="btn btn-secondary btn-sm" download>
+          Download
+        </a>
+        <a href="static/images/poster3.png" class="btn btn-primary btn-sm" target="_blank">
+          Open in New Tab
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
 
   <!-- MDB5 JS -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.0.0/mdb.min.js"></script>
