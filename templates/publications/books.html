@@ -57,39 +57,136 @@
     </div>
   </div>
 
-  <div class="container" style="padding-top: 40px; padding-bottom: 30px;">
-    <div class="card" style="width: 18rem;">
-    <img src="/static/img/books/book1.png" class="card-img-top" alt="Chicago Skyscrapers"/>
-    <div class="card-body">
-      <h5 class="card-title">PANDUAN	DASAR	ANALISIS	DATA	GENETIK	UNTUK	PUBLIKASI
-</h5>
-      <p class="card-text">Panduan ini berisi prosedur, tahapan dan uraian analisis data genetik
-hasil penelitian (data primer), hasil download dari genbank (data sekunder)
-atau gabungan keduanya untuk keperluan publikasi.</p>
-    </div>
-    <div class="card-body">
-      <div class="row">
-        <!-- Link to open the PDF viewer page for "ebook1.pdf" -->
-            <div class="col-md-6">
-                <a href="{{ url_for('view_pdf', filename='ebook1.pdf') }}">View PDF</a>
+ <div class="container" style="padding-top: 40px; padding-bottom: 30px;">
+  <div class="row row-cols-1 row-cols-md-3 g-4">
+    <!-- Card 1 -->
+    <div class="col">
+      <div class="card h-100" style="width: 18rem;">
+        <img src="/static/img/books/book1.png" class="card-img-top" alt="Chicago Skyscrapers"/>
+        <div class="card-body">
+          <h5 class="card-title">PANDUAN DASAR ANALISIS DATA GENETIK UNTUK PUBLIKASI</h5>
+          <p class="card-text">Panduan ini berisi prosedur, tahapan dan uraian analisis data genetik
+            hasil penelitian (data primer), hasil download dari genbank (data sekunder)
+            atau gabungan keduanya untuk keperluan publikasi.</p>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-6">
+              <a href="{{ url_for('view_pdf', filename='ebook1.pdf') }}">View PDF</a>
             </div>
-            <div class="col-md-6">
-                <a href="{{ url_for('download_pdf', filename='ebook1.pdf') }}" class="card-link">Download</a>
+            <div class="col-6">
+              <a href="{{ url_for('download_pdf', filename='ebook1.pdf') }}" class="card-link">Download</a>
             </div>
-      </div>
-
-      <div class="stats mt-3">
-          <p style="font-size:13px;">
+          </div>
+          <div class="stats mt-3">
+            <p style="font-size:13px;">
               <i class="fas fa-eye"></i> Views: {{ view_count }}
-          </p>
-          <p style="font-size:13px;">
+            </p>
+            <p style="font-size:13px;">
               <i class="fas fa-download"></i> Downloads: {{ download_count }}
-          </p>
+            </p>
+          </div>
+        </div>
       </div>
+    </div>
 
+    <!-- Card 2 -->
+    <div class="col">
+      <div class="card h-100" style="width: 18rem;">
+        <img src="/static/img/books/book2.png" class="card-img-top" alt="Chicago Skyscrapers"/>
+        <div class="card-body">
+          <h5 class="card-title">Monograf: Ikan Ekonomis Penting Perairan Fakfak dan Kaimana: Studi Tiga Genus</h5>
+          <p class="card-text">- </p>
+        </div>
+        
+          <!-- Card 3 
+        <div class="card-body">
+          <div class="row">
+            <div class="col-6">
+              <a href="{{ url_for('view_pdf', filename='ebook1.pdf') }}">View PDF</a>
+            </div>
+            <div class="col-6">
+              <a href="{{ url_for('download_pdf', filename='ebook1.pdf') }}" class="card-link">Download</a>
+            </div>
+          </div>
+          <div class="stats mt-3">
+            <p style="font-size:13px;">
+              <i class="fas fa-eye"></i> Views: {{ view_count }}
+            </p>
+            <p style="font-size:13px;">
+              <i class="fas fa-download"></i> Downloads: {{ download_count }}
+            </p>
+          </div>
+        </div>
+        -->
+      </div>
+    </div>
+
+    <!-- Card 3 -->
+    <div class="col">
+      <div class="card h-100" style="width: 18rem;">
+        <img src="/static/img/books/book3.png" class="card-img-top" alt="Chicago Skyscrapers"/>
+        <div class="card-body">
+          <h5 class="card-title">Teknik Labotarium Analisis DNA dalam Bidang Perikanan </h5>
+          <p class="card-text">-</p>
+        </div>
+        <!-- Card 3 
+        <div class="card-body">
+          <div class="row">
+            <div class="col-6">
+              <a href="{{ url_for('view_pdf', filename='ebook1.pdf') }}">View PDF</a>
+            </div>
+            <div class="col-6">
+              <a href="{{ url_for('download_pdf', filename='ebook1.pdf') }}" class="card-link">Download</a>
+            </div>
+          </div>
+          <div class="stats mt-3">
+            <p style="font-size:13px;">
+              <i class="fas fa-eye"></i> Views: {{ view_count }}
+            </p>
+            <p style="font-size:13px;">
+              <i class="fas fa-download"></i> Downloads: {{ download_count }}
+            </p>
+          </div>
+        </div>
+        -->
+      </div>
     </div>
   </div>
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+    <!-- Card 4 -->
+    <div class="col">
+      <div class="card h-100" style="width: 18rem;">
+        <img src="/static/img/books/book4.png" class="card-img-top" alt="Chicago Skyscrapers"/>
+        <div class="card-body">
+          <h5 class="card-title">APLIKASI BARCODE DNA DALAM PERIKANAN </h5>
+          <p class="card-text">-</p>
+        </div>
+        <!-- Card 3 
+        <div class="card-body">
+          <div class="row">
+            <div class="col-6">
+              <a href="{{ url_for('view_pdf', filename='ebook1.pdf') }}">View PDF</a>
+            </div>
+            <div class="col-6">
+              <a href="{{ url_for('download_pdf', filename='ebook1.pdf') }}" class="card-link">Download</a>
+            </div>
+          </div>
+          <div class="stats mt-3">
+            <p style="font-size:13px;">
+              <i class="fas fa-eye"></i> Views: {{ view_count }}
+            </p>
+            <p style="font-size:13px;">
+              <i class="fas fa-download"></i> Downloads: {{ download_count }}
+            </p>
+          </div>
+        </div>
+        -->
+      </div>
+    </div>
+    </div>
 </div>
+
 
 
   <!-- MDB5 JS -->
